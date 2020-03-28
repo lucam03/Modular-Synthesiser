@@ -1,6 +1,6 @@
 var context = new AudioContext();
 var oscKnobs = document.getElementById("oscKnobs");
-var oscs = []
+var oscArray = []
 
 
 class Osc {
@@ -37,5 +37,5 @@ class Osc {
 }
 
 function createOsc() {
-	oscs.push(new Osc);
+	oscArray.push(new Osc);
 }
