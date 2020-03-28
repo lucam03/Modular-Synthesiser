@@ -1,8 +1,20 @@
 var context = new AudioContext();
+var oscKnobs = document.getElementById("oscKnobs");
+var oscs = []
+
 
 class osc {
 	constructor() {
 		this.Osc = context.createOscillator()
+		this.OscKnob = pureknob.createKnob(300, 300);
+		this.OscKnob.setProperty("valMax", 4186);
+		this.OscKnob.setProperty("valMin", 28);
+		this.OscKnob.setValue(262);
+		this.OscNode = this.OscKnob.node();
+		this.OscElement = document.createElement(this.OscNode);
+		oscKnobs.appendChild(this.OscElement)
+		this.OscElement.appendChild(thisOscNode);
+		this.OscKnob.addListener(knobListener);
 	}
 	playOsc() {
 		this.Osc.connect(context.destination);
@@ -13,34 +25,16 @@ class osc {
 			this.Osc.start();
 			this.Osc.started = true;
 		}
-}
-
-function playthisOsc() {
-	thisOsc.connect(context.destination);
-	thisOsc.type = "sine";
-	thisOsc.started = false;
-	thisOsc.frequency.value = thisOscKnob.getValue();
-	if (thisOsc.started === false) {
-		thisOsc.start();
-		thisOsc.started = true;
+	}
+	stopthisOsc() {
+			this.Osc.disconnect(context.destination);
+  }
+	knobListener(knob, value) {
+		console.log(value);
+		thisOsc.frequency.value = value;
 	}
 }
 
-function stopthisOsc() {
-	thisOsc.disconnect(context.destination);
+function createOsc() {
+	oscs.push(new osc)
 }
-
-var thisOscKnob = pureknob.createKnob(300, 300);
-thisOscKnob.setProperty("valMax", 4186);
-thisOscKnob.setProperty("valMin", 28);
-thisOscKnob.setValue(262);
-var thisOscNode = thisOscKnob.node();
-var thisOscElement = document.getElementById("thisOscKnobElement");
-thisOscElement.appendChild(thisOscNode);
-
-var knobListener = function(knob, value) {
-	console.log(value);
-	thisOsc.frequency.value = value;
-}
-
-thisOscKnob.addListener(knobListener);
