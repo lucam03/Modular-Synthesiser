@@ -5,6 +5,7 @@ var oscArray = []
 class Osc {
 	constructor() {
 		this.osc = context.createOscillator()
+		this.osc.frequency.value = 262;
 		this.oscKnob = pureknob.createKnob(300, 300);
 		this.oscKnob.setProperty("valMax", 4186);
 		this.oscKnob.setProperty("valMin", 28);
@@ -16,9 +17,8 @@ class Osc {
 		this.oscKnob.addListener(this.knobListener);
 		this.oscNode = this.oscKnob.node();
 		this.oscElement = document.createElement("div");
-		this.oscElement.appendChild(this.oscNode)
-		oscKnobs.appendChild(this.oscElement)
 		this.oscElement.appendChild(this.oscNode);
+		oscKnobs.appendChild(this.oscElement);
 	}
 	playOsc() {
 		this.osc.connect(context.destination);
@@ -30,7 +30,7 @@ class Osc {
 			this.osc.started = true;
 		}
 	}
-	stopthisOsc() {
+	stopOsc() {
 			this.osc.disconnect(context.destination);
   }
 }
