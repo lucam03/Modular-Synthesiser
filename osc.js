@@ -3,38 +3,39 @@ var oscKnobs = document.getElementById("oscKnobs");
 var oscs = []
 
 
-class osc {
+class Osc {
 	constructor() {
-		this.Osc = context.createOscillator()
-		this.OscKnob = pureknob.createKnob(300, 300);
-		this.OscKnob.setProperty("valMax", 4186);
-		this.OscKnob.setProperty("valMin", 28);
-		this.OscKnob.setValue(262);
-		this.OscNode = this.OscKnob.node();
-		this.OscElement = document.createElement(this.OscNode);
-		oscKnobs.appendChild(this.OscElement)
-		this.OscElement.appendChild(thisOscNode);
-		this.OscKnob.addListener(knobListener);
+		this.osc = context.createOscillator()
+		this.oscKnob = pureknob.createKnob(300, 300);
+		this.oscKnob.setProperty("valMax", 4186);
+		this.oscKnob.setProperty("valMin", 28);
+		this.oscKnob.setValue(262);
+		this.oscNode = this.oscKnob.node();
+		this.oscElement = document.createElement("div");
+		this.oscElement.appendChild(this.oscNode)
+		oscKnobs.appendChild(this.oscElement)
+		this.oscElement.appendChild(this.oscNode);
+		this.oscKnob.addListener(knobListener);
 	}
 	playOsc() {
-		this.Osc.connect(context.destination);
-		this.Osc.type = "sine";
-		this.Osc.started = false;
-		this.Osc.frequency.value = thisOscKnob.getValue();
-		if (this.Osc.started === false) {
-			this.Osc.start();
-			this.Osc.started = true;
+		this.osc.connect(context.destination);
+		this.osc.type = "sine";
+		this.osc.started = false;
+		this.osc.frequency.value = thisoscKnob.getValue();
+		if (this.osc.started === false) {
+			this.osc.start();
+			this.osc.started = true;
 		}
 	}
 	stopthisOsc() {
-			this.Osc.disconnect(context.destination);
+			this.osc.disconnect(context.destination);
   }
 	knobListener(knob, value) {
 		console.log(value);
-		thisOsc.frequency.value = value;
+		this.osc.frequency.value = value;
 	}
 }
 
 function createOsc() {
-	oscs.push(new osc)
+	oscs.push(new Osc);
 }
