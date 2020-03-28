@@ -10,12 +10,16 @@ class Osc {
 		this.oscKnob.setProperty("valMax", 4186);
 		this.oscKnob.setProperty("valMin", 28);
 		this.oscKnob.setValue(262);
+		this.knobListener = function(knob, value) {
+			console.log(value);
+			this.osc.frequency.value = value;
+		}
+		this.oscKnob.addListener(this.knobListener);
 		this.oscNode = this.oscKnob.node();
 		this.oscElement = document.createElement("div");
 		this.oscElement.appendChild(this.oscNode)
 		oscKnobs.appendChild(this.oscElement)
 		this.oscElement.appendChild(this.oscNode);
-		this.oscKnob.addListener(knobListener);
 	}
 	playOsc() {
 		this.osc.connect(context.destination);
@@ -30,10 +34,6 @@ class Osc {
 	stopthisOsc() {
 			this.osc.disconnect(context.destination);
   }
-	knobListener(knob, value) {
-		console.log(value);
-		this.osc.frequency.value = value;
-	}
 }
 
 function createOsc() {
