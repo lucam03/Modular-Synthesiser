@@ -2,7 +2,6 @@ var context = new AudioContext();
 var oscKnobs = document.getElementById("oscKnobs");
 var oscArray = []
 
-
 class Osc {
 	constructor() {
 		this.osc = context.createOscillator()
