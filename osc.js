@@ -55,7 +55,7 @@ function createOsc() {
 	var newPlayButton = document.getElementById(`play${Osc.numInstances}`);
 	var newStopButton = document.getElementById(`stop${Osc.numInstances}`);
 	var newSlider = document.getElementById(`slider${Osc.numInstances}`);
-	newSlider.oninput = eval(`(function() {oscArray[${parseInt(Osc.numInstances.toString())}].updateFrequency()})`);
-	newPlayButton.onclick = eval(`(function() {oscArray[${parseInt(Osc.numInstances.toString())}].playOsc()})`);
-	newStopButton.onclick = eval(`(function() {oscArray[${parseInt(Osc.numInstances.toString())}].stopOsc()})`);
+	newSlider.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateFrequency()})`);
+	newPlayButton.onclick = eval(`(function() {oscArray[${Osc.numInstances}].playOsc()})`);
+	newStopButton.onclick = eval(`(function() {oscArray[${Osc.numInstances}].stopOsc()})`);
 }
