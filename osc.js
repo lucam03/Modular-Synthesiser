@@ -17,6 +17,7 @@ class Osc {
 		this.oscDiv = document.createElement("div")
 		this.oscDiv.style.width = "50%";
 		this.oscDiv.id = `osc${Osc.numInstances}`;
+		this.oscDiv.class = "Osc" 
 		//Create osc title
 		this.oscTitle = document.createElement("h4");
 		this.oscTitle.innerHTML = `Oscillator ${Osc.numInstances + 1}`;
