@@ -2,6 +2,8 @@ var context = new AudioContext();
 var oscs = document.getElementById("oscs");
 var oscArray = [];
 
+
+
 class Osc {
 	constructor() {
 		Osc.numInstances = (Osc.numInstances + 1 || 0);
@@ -10,6 +12,7 @@ class Osc {
 		this.osc.hasBeenStarted = false;
 		this.osc.connected = false;
 		this.osc.frequency.value = 262;
+		this.osc.type = "sine";
 		//Initialise gain
 		this.oscGain = context.createGain();
 		this.oscGain.connect(context.destination);
@@ -21,6 +24,7 @@ class Osc {
 		//Create osc title
 		this.oscTitle = document.createElement("h4");
 		this.oscTitle.innerHTML = `Oscillator ${Osc.numInstances + 1}`;
+		this.oscTitle.id = `Title${Osc.numInstances}`;
 		this.oscTitle.style.width = "25%";
 		this.oscDiv.appendChild(this.oscTitle);
 		//Create osc frequency slider
@@ -98,6 +102,29 @@ class Osc {
 		this.oscAmpVal.style.width = "10%";
 		this.oscAmpVal.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateAmplitude("B")})`);
 		this.oscDiv.appendChild(this.oscAmpVal);
+		//Define waveshapes
+		this.sineWave = document.createElement("option");
+		this.sineWave.value = "sine";
+		this.sineWave.innerHTML = "Sine";
+		this.squareWave = document.createElement("option");
+		this.squareWave.value = "square";
+		this.squareWave.innerHTML = "Square";
+		this.sawWave = document.createElement("option");
+		this.sawWave.value = "sawtooth";
+		this.sawWave.innerHTML = "Sawtooth";
+		this.triangleWave = document.createElement("option");
+		this.triangleWave.value = "triangle";
+		this.triangleWave.innerHTML = "Triangle";
+		//Create waveshape dropdown
+		this.oscShape = document.createElement("select");
+		this.oscShape.id = `shape${Osc.numInstances}`;
+		this.oscShape.style.width = "16%";
+		this.oscShape.onchange = eval(`(function() {oscArray[${Osc.numInstances}].updateWaveShape()})`);
+		this.oscShape.appendChild(this.sineWave);
+		this.oscShape.appendChild(this.squareWave);
+		this.oscShape.appendChild(this.sawWave);
+		this.oscShape.appendChild(this.triangleWave);
+		this.oscDiv.appendChild(this.oscShape);
 		//Add osc div to main div
 		oscs.appendChild(this.oscDiv);
 		console.log("Osc created");
@@ -106,7 +133,6 @@ class Osc {
 	playOsc() {
 		this.osc.connected = true;
 		this.osc.connect(this.oscGain);
-		this.osc.type = "sine";
 		this.osc.frequency.value = this.oscFrequency.value;
 		if (!this.osc.hasBeenStarted) {
 			this.osc.start();
@@ -144,6 +170,9 @@ class Osc {
 		this.oscFrequency.min = this.minFreqValue.value;
 		this.oscAmplitude.max = this.maxAmpValue.value;
 		this.oscAmplitude.min = this.minAmpValue.value;
+	}
+	updateWaveShape() {
+		this.osc.type = this.oscShape.value;
 	}
 }
 
