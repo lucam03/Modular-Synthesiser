@@ -2,8 +2,6 @@ var context = new AudioContext();
 var oscs = document.getElementById("oscs");
 var oscArray = [];
 
-
-
 class Osc {
 	constructor() {
 		Osc.numInstances = (Osc.numInstances + 1 || 0);
@@ -18,9 +16,8 @@ class Osc {
 		this.oscGain.connect(context.destination);
 		//Create base div for osc
 		this.oscDiv = document.createElement("div")
-		this.oscDiv.style.width = "50%";
 		this.oscDiv.id = `osc${Osc.numInstances}`;
-		this.oscDiv.class = "Osc" 
+		this.oscDiv.className = "Osc"
 		//Create osc title
 		this.oscTitle = document.createElement("h4");
 		this.oscTitle.innerHTML = `Oscillator ${Osc.numInstances + 1}`;
@@ -38,39 +35,24 @@ class Osc {
 		this.oscFrequency.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateFrequency("S")})`);
 		this.oscDiv.appendChild(this.oscFrequency);
 		//Create min and max frequency boxes
+		this.manFreqInput = document.createElement("P")
 		this.maxFreqValue = document.createElement("input");
 		this.minFreqValue = document.createElement("input");
 		this.maxFreqValue.id = `maxF${Osc.numInstances}`;
 		this.minFreqValue.id = `minF${Osc.numInstances}`;
 		this.maxFreqValue.value = 4186;
 		this.minFreqValue.value = 28;
-		this.maxFreqValue.style.width = "10%";
-		this.minFreqValue.style.width = "10%";
 		this.maxFreqValue.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateMinMax()})`);
 		this.minFreqValue.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateMinMax()})`);
-		this.oscDiv.appendChild(this.minFreqValue);
-		this.oscDiv.appendChild(this.maxFreqValue);
+		this.manFreqInput.appendChild(this.minFreqValue);
+		this.manFreqInput.appendChild(this.maxFreqValue);
 		//Create current frequency box
 		this.oscFreqVal = document.createElement("input");
 		this.oscFreqVal.id = `freqValue${Osc.numInstances}`;
 		this.oscFreqVal.value = 262;
-		this.oscFreqVal.style.width = "10%";
 		this.oscFreqVal.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateFrequency("B")})`);
-		this.oscDiv.appendChild(this.oscFreqVal);
-		//Create play button
-		this.playButton = document.createElement("button");
-		this.playButton.innerHTML = "PLAY";
-		this.playButton.id = `play${Osc.numInstances}`
-		this.playButton.style.width = "8%";
-		this.playButton.onclick = eval(`(function() {oscArray[${Osc.numInstances}].playOsc()})`);
-		this.oscDiv.appendChild(this.playButton);
-		//Create stop button
-		this.stopButton = document.createElement("button");
-		this.stopButton.innerHTML = "STOP"
-		this.stopButton.id = `stop${Osc.numInstances}`
-		this.stopButton.style.width = "8%";
-		this.stopButton.onclick = eval(`(function() {oscArray[${Osc.numInstances}].stopOsc()})`);
-		this.oscDiv.appendChild(this.stopButton);
+		this.manFreqInput.appendChild(this.oscFreqVal);
+		this.oscDiv.appendChild(this.manFreqInput);
 		//Create amplitude slider
 		this.oscAmplitude = document.createElement("input");
 		this.oscAmplitude.id = `amplitude${Osc.numInstances}`;
@@ -83,25 +65,39 @@ class Osc {
 		this.oscAmplitude.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateAmplitude("S")})`);
 		this.oscDiv.appendChild(this.oscAmplitude);
 		//Create min and max amplitude boxes
+		this.manAmpInput = document.createElement("P")
 		this.maxAmpValue = document.createElement("input");
 		this.minAmpValue = document.createElement("input");
 		this.maxAmpValue.id = `maxA${Osc.numInstances}`;
 		this.minAmpValue.id = `minA${Osc.numInstances}`;
 		this.maxAmpValue.value = 11;
 		this.minAmpValue.value = 0;
-		this.maxAmpValue.style.width = "10%";
-		this.minAmpValue.style.width = "10%";
 		this.maxAmpValue.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateMinMax()})`);
 		this.minAmpValue.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateMinMax()})`);
-		this.oscDiv.appendChild(this.minAmpValue);
-		this.oscDiv.appendChild(this.maxAmpValue);
+		this.manAmpInput.appendChild(this.minAmpValue);
+		this.manAmpInput.appendChild(this.maxAmpValue);
 		//Create current amplitude box
 		this.oscAmpVal = document.createElement("input");
 		this.oscAmpVal.id = `ampValue${Osc.numInstances}`;
 		this.oscAmpVal.value = 1;
-		this.oscAmpVal.style.width = "10%";
 		this.oscAmpVal.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateAmplitude("B")})`);
-		this.oscDiv.appendChild(this.oscAmpVal);
+		this.manAmpInput.appendChild(this.oscAmpVal);
+		this.oscDiv.appendChild(this.manAmpInput)
+		//Create play button
+		this.control = document.createElement("P")
+		this.playButton = document.createElement("button");
+		this.playButton.innerHTML = "PLAY";
+		this.playButton.id = `play${Osc.numInstances}`
+		this.playButton.style.width = "8%";
+		this.playButton.onclick = eval(`(function() {oscArray[${Osc.numInstances}].playOsc()})`);
+		this.control.appendChild(this.playButton);
+		//Create stop button
+		this.stopButton = document.createElement("button");
+		this.stopButton.innerHTML = "STOP"
+		this.stopButton.id = `stop${Osc.numInstances}`
+		this.stopButton.style.width = "8%";
+		this.stopButton.onclick = eval(`(function() {oscArray[${Osc.numInstances}].stopOsc()})`);
+		this.control.appendChild(this.stopButton);
 		//Define waveshapes
 		this.sineWave = document.createElement("option");
 		this.sineWave.value = "sine";
@@ -124,7 +120,8 @@ class Osc {
 		this.oscShape.appendChild(this.squareWave);
 		this.oscShape.appendChild(this.sawWave);
 		this.oscShape.appendChild(this.triangleWave);
-		this.oscDiv.appendChild(this.oscShape);
+		this.control.appendChild(this.oscShape);
+		this.oscDiv.appendChild(this.control)
 		//Add osc div to main div
 		oscs.appendChild(this.oscDiv);
 		console.log("Osc created");
