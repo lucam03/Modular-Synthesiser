@@ -1,0 +1,37 @@
+body{
+  background-color: lightblue;
+}
+
+#createosc{
+  margin-right: 10px;
+  margin-left: 10px;
+  width: 10%;
+}
+
+.Osc{
+  width: 23%;
+  border-style: solid;
+}
+
+h4{
+  font-style: italic;
+  font-weight: bold;
+}
+
+button{
+  margin-right: 10px;
+  margin-left: 10px;
+  width: 10%;
+}
+
+input{
+  margin-right: 10px;
+  margin-left: 10px;
+  width: 10%;
+}
+
+select{
+  margin-right: 10px;
+  margin-left: 10px;
+  width: 10%;
+}
