@@ -1,19 +1,35 @@
 var context = new AudioContext();
 var oscs = document.getElementById("oscs");
 var oscArray = [];
+var oscParams = [];
 
 class Osc {
 	constructor() {
 		Osc.numInstances = (Osc.numInstances + 1 || 0);
+		this.num = Osc.numInstances;
 		//Initialise oscillator
 		this.osc = context.createOscillator();
 		this.osc.hasBeenStarted = false;
 		this.osc.connected = false;
 		this.osc.frequency.value = 262;
 		this.osc.type = "sine";
+		this.destination = context.destination
+		//Initialise destinations
+		this.mainDestination = document.createElement("option");
+		this.mainDestination.value = `context.destination`;
+		this.mainDestination.innerHTML = "Audio OUT";
+		this.oscDestinations = [this.mainDestination];
+		//Create control div
+		this.control = document.createElement("div")
+		//Create destination dropdown
+		this.oscDests = document.createElement("select");
+		this.oscDests.id = `destination${Osc.numInstances}`;
+		this.oscDests.onchange = eval(`(function() {oscArray[${Osc.numInstances}].updateDestination()})`);
+		this.control.appendChild(this.oscDests);
+		this.updateThisDestinationList();
 		//Initialise gain
 		this.oscGain = context.createGain();
-		this.oscGain.connect(context.destination);
+		this.oscGain.connect(this.destination);
 		//Create base div for osc
 		this.oscDiv = document.createElement("div")
 		this.oscDiv.id = `osc${Osc.numInstances}`;
@@ -22,15 +38,16 @@ class Osc {
 		this.oscTitle = document.createElement("h4");
 		this.oscTitle.innerHTML = `Oscillator ${Osc.numInstances + 1}`;
 		this.oscTitle.id = `Title${Osc.numInstances}`;
-		this.oscTitle.style.width = "25%";
+		this.oscTitle.style.width = "100%";
 		this.oscDiv.appendChild(this.oscTitle);
 		//Create osc frequency slider
 		this.oscFrequency = document.createElement("input");
 		this.oscFrequency.id = `frequency${Osc.numInstances}`;
 		this.oscFrequency.type = "range";
-		this.oscFrequency.min = 28;
-		this.oscFrequency.max = 4186;
+		this.oscFrequency.min = 0;
+		this.oscFrequency.max = 440;
 		this.oscFrequency.value = 262;
+		this.oscFrequency.step = 0.1
 		this.oscFrequency.style.width = "33%";
 		this.oscFrequency.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateFrequency("S")})`);
 		this.oscDiv.appendChild(this.oscFrequency);
@@ -40,8 +57,8 @@ class Osc {
 		this.minFreqValue = document.createElement("input");
 		this.maxFreqValue.id = `maxF${Osc.numInstances}`;
 		this.minFreqValue.id = `minF${Osc.numInstances}`;
-		this.maxFreqValue.value = 4186;
-		this.minFreqValue.value = 28;
+		this.maxFreqValue.value = 440;
+		this.minFreqValue.value = 0;
 		this.maxFreqValue.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateMinMax()})`);
 		this.minFreqValue.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateMinMax()})`);
 		this.manFreqInput.appendChild(this.minFreqValue);
@@ -82,20 +99,17 @@ class Osc {
 		this.oscAmpVal.value = 1;
 		this.oscAmpVal.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateAmplitude("B")})`);
 		this.manAmpInput.appendChild(this.oscAmpVal);
-		this.oscDiv.appendChild(this.manAmpInput)
+		this.oscDiv.appendChild(this.manAmpInput);
 		//Create play button
-		this.control = document.createElement("P")
 		this.playButton = document.createElement("button");
 		this.playButton.innerHTML = "PLAY";
-		this.playButton.id = `play${Osc.numInstances}`
-		this.playButton.style.width = "8%";
+		this.playButton.id = `play${Osc.numInstances}`;
 		this.playButton.onclick = eval(`(function() {oscArray[${Osc.numInstances}].playOsc()})`);
 		this.control.appendChild(this.playButton);
 		//Create stop button
 		this.stopButton = document.createElement("button");
-		this.stopButton.innerHTML = "STOP"
-		this.stopButton.id = `stop${Osc.numInstances}`
-		this.stopButton.style.width = "8%";
+		this.stopButton.innerHTML = "STOP";
+		this.stopButton.id = `stop${Osc.numInstances}`;
 		this.stopButton.onclick = eval(`(function() {oscArray[${Osc.numInstances}].stopOsc()})`);
 		this.control.appendChild(this.stopButton);
 		//Define waveshapes
@@ -114,15 +128,14 @@ class Osc {
 		//Create waveshape dropdown
 		this.oscShape = document.createElement("select");
 		this.oscShape.id = `shape${Osc.numInstances}`;
-		this.oscShape.style.width = "16%";
 		this.oscShape.onchange = eval(`(function() {oscArray[${Osc.numInstances}].updateWaveShape()})`);
 		this.oscShape.appendChild(this.sineWave);
 		this.oscShape.appendChild(this.squareWave);
 		this.oscShape.appendChild(this.sawWave);
 		this.oscShape.appendChild(this.triangleWave);
 		this.control.appendChild(this.oscShape);
-		this.oscDiv.appendChild(this.control)
 		//Add osc div to main div
+		this.oscDiv.appendChild(this.control)
 		oscs.appendChild(this.oscDiv);
 		console.log("Osc created");
 		console.log(this.oscDiv);
@@ -145,7 +158,7 @@ class Osc {
 		}
   }
 	updateFrequency(updateType) {
-		if (updateType ==="S") {
+		if (updateType === "S") {
 			this.osc.frequency.value = this.oscFrequency.value;
 			this.oscFreqVal.value = this.oscFrequency.value;
 		} else {
@@ -171,8 +184,41 @@ class Osc {
 	updateWaveShape() {
 		this.osc.type = this.oscShape.value;
 	}
+	updateDestination() {
+		this.oscGain.disconnect();
+		console.log(this.oscDests.value);
+		this.destination = eval(this.oscDests.value);
+		this.oscGain.connect(this.destination);
+	}
+	updateThisDestinationList() {
+		this.oscDestinations = [this.mainDestination];
+		for (var param = 0; param < oscParams.length; param++) {
+			let p = document.createElement("option")
+			p.value = oscParams[param]
+			p.innerHTML = param % 2 == 0 ? `Osc ${Math.ceil((param + 1) / 2)} Frequency` : `Osc ${Math.ceil((param + 1) / 2)} Gain`
+			this.oscDestinations.push(p)
+		}
+		this.oscDests.innerHTML = "";
+		for (var param = 0; param < this.oscDestinations.length; param++) {
+			this.oscDests.appendChild(this.oscDestinations[param]);
+		}
+	}
 }
 
 function createOsc() {
 	oscArray.push(new Osc);
+	updateDestinationList()
+}
+
+function updateDestinationList() {
+	oscParams = [];
+	for (var oscItem = 0; oscItem < oscArray.length; oscItem++) {
+		let f = `oscArray[${oscItem}].osc.frequency`;
+		let g = `oscArray[${oscItem}].oscGain.gain`;
+		oscParams.push(f);
+		oscParams.push(g);
+	}
+	for (var oscItem = 0; oscItem < oscArray.length; oscItem++) {
+		oscArray[oscItem].updateThisDestinationList();
+	}
 }

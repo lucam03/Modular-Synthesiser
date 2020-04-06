@@ -1,5 +1,4 @@
 body{
-  background-color: lightblue;
 }
 
 #createosc{
@@ -9,7 +8,7 @@ body{
 }
 
 .Osc{
-  width: 23%;
+  width: 50%;
   border-style: solid;
 }
 
@@ -33,5 +32,5 @@ input{
 select{
   margin-right: 10px;
   margin-left: 10px;
-  width: 10%;
+  width: 25%;
 }
