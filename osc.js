@@ -5,12 +5,17 @@ var oscs = document.getElementById("oscs");
 var oscArray = [];
 var oscParams = [];
 //creating analyser node, defining its properties for visualiser
-var analyser = context.createAnalyser();
 analyser.fftSize = 2048;
 //creating array for frequency and waveform
 var bufferLength = analyser.frequencyBinCount;
 console.log(bufferLength)
 var dataArray = new Uint8Array(bufferLength)
+//creating canvas variable
+var canvas = document.getElementById('canvas');
+var canvasCtx = canvas.getContext('2d');
+//canvas dimensions
+var WIDTH = 80;
+var HEIGHT = 80;
 
 class Osc {
 	constructor() {
@@ -115,7 +120,6 @@ class Osc {
 		this.playButton.innerHTML = "PLAY";
 		this.playButton.id = `play${Osc.numInstances}`;
 		this.playButton.onclick = eval(`(function() {oscArray[${Osc.numInstances}].playOsc()})`);
-		this.playButton.onclick = eval(`(function() {oscArray[${Osc.numInstances}].playWaveform()})`);
 		this.control.appendChild(this.playButton);
 		//Create stop button
 		this.stopButton = document.createElement("button");
@@ -145,10 +149,6 @@ class Osc {
 		this.oscShape.appendChild(this.sawWave);
 		this.oscShape.appendChild(this.triangleWave);
 		this.control.appendChild(this.oscShape);
-		//creates canvas
-		this.canvas = document.createElement("canvas")
-		this.canvas.id = 'canvas'
-		this.canvas.
 		//Add osc div to main div
 		this.oscDiv.appendChild(this.control)
 		oscs.appendChild(this.oscDiv);
@@ -157,6 +157,7 @@ class Osc {
 	}
 	playOsc() {
 		this.osc.connected = true;
+		playWaveform();
 		this.osc.connect(this.oscGain);
 		this.osc.frequency.value = this.oscFrequency.value;
 		if (!this.osc.hasBeenStarted) {
@@ -164,41 +165,6 @@ class Osc {
 			this.osc.hasBeenStarted = true;
 		}
 		console.log("Started");
-	}
-	playWaveform() {
-		//clears canvas
-		canvasCtx.clearRect( 0, 0, WIDTH, HEIGHT);
-		function draw() {
-			// variable to enable looping of draw function
-			var drawVisual = requestAnimationFrame(draw);
-			//time domain data
-			analyser.getByteTimeDomainData(dataArray);
-			//canvas settings
-			canvasCtx.fillStyle = 'rgb(200,200,200)';
-			canvasCtx.fillRect( 0, 0, WIDTH, HEIGHT);
-			canvasCtx.lineWidth = 2;
-			canvasCtx.strokeStyle = 'rgb(0,0,0)';
-			canvasCtx.beginPath();
-			//width of each segment of the line to be drawn by dividing canvas
-			var sliceWidth = WIDTH * 1.0 / bufferLength;
-			var x = 0;
-			//looping to get define position of wave at each poitn in buffer
-			for(var i = 0; i < bufferLength; i++){
-				var v = dataArray[i] / 128.0;
-				var y = v * HEIGHT/2;
-
-				if (i === 0) {
-					canvasCtx.moveTo(x,y);
-				} else {
-					canvasCtx.lineTo(x,y);
-				}
-
-				x += sliceWidth;
-			}
-			canvasCtx.lineTo(canvas.width, canvas.height/2);
-			canvasCtx.stroke();
-			};
-			draw();
 	}
 	stopOsc() {
 		if (this.osc.connected) {
@@ -271,4 +237,40 @@ function updateDestinationList() {
 	for (var oscItem = 0; oscItem < oscArray.length; oscItem++) {
 		oscArray[oscItem].updateThisDestinationList();
 	}
+}
+
+function playWaveform() {
+	//clears canvas
+	canvasCtx.clearRect( 0, 0, WIDTH, HEIGHT);
+	function draw() {
+		// variable to enable looping of draw function
+		var drawVisual = requestAnimationFrame(draw);
+		//time domain data
+		analyser.getByteTimeDomainData(dataArray);
+		//canvas settings
+		canvasCtx.fillStyle = 'rgb(200,200,200)';
+		canvasCtx.fillRect( 0, 0, WIDTH, HEIGHT);
+		canvasCtx.lineWidth = 2;
+		canvasCtx.strokeStyle = 'rgb(0,0,0)';
+		canvasCtx.beginPath();
+		//width of each segment of the line to be drawn by dividing canvas
+		var sliceWidth = WIDTH * 1.0 / bufferLength;
+		var x = 0;
+		//looping to get define position of wave at each poitn in buffer
+		for(var i = 0; i < bufferLength; i++){
+			var v = dataArray[i] / 128.0;
+			var y = v * HEIGHT/2;
+
+			if (i === 0) {
+				canvasCtx.moveTo(x,y);
+			} else {
+				canvasCtx.lineTo(x,y);
+			}
+
+			x += sliceWidth;
+		}
+		canvasCtx.lineTo(canvas.width, canvas.height/2);
+		canvasCtx.stroke();
+		};
+		draw();
 }
