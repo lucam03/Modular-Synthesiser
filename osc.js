@@ -1,4 +1,6 @@
 var context = new AudioContext();
+var analyser = context.createAnalyser();
+analyser.connect(context.destination);
 var oscs = document.getElementById("oscs");
 var oscArray = [];
 var oscParams = [];
@@ -13,10 +15,10 @@ class Osc {
 		this.osc.connected = false;
 		this.osc.frequency.value = 262;
 		this.osc.type = "sine";
-		this.destination = context.destination
+		this.destination = analyser;
 		//Initialise destinations
 		this.mainDestination = document.createElement("option");
-		this.mainDestination.value = `context.destination`;
+		this.mainDestination.value = `analyser`;
 		this.mainDestination.innerHTML = "Audio OUT";
 		this.oscDestinations = [this.mainDestination];
 		//Create control div
