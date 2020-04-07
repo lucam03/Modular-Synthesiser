@@ -44,7 +44,7 @@ class Osc {
 		this.oscDests.id = `destination${Osc.numInstances}`;
 		this.oscDests.onchange = eval(`(function() {oscArray[${Osc.numInstances}].updateDestination()})`);
 		this.control.appendChild(this.oscDests);
-		this.updateThisDestinationList();
+		this.initialiseThisDestinationList();
 		//Initialise gain
 		this.oscGain = context.createGain();
 		this.osc.connect(this.oscGain)
@@ -208,17 +208,35 @@ class Osc {
 		this.destination = eval(this.oscDests.value);
 		this.oscGain.connect(this.destination);
 	}
-	updateThisDestinationList() {
+	initialiseThisDestinationList() {
 		this.oscDestinations = [this.mainDestination];
 		for (var param = 0; param < oscParams.length; param++) {
-			let p = document.createElement("option")
-			p.value = oscParams[param]
-			p.innerHTML = param % 2 == 0 ? `Osc ${Math.ceil((param + 1) / 2)} Frequency` : `Osc ${Math.ceil((param + 1) / 2)} Gain`
-			this.oscDestinations.push(p)
+			let p = document.createElement("option");
+			p.value = oscParams[param];
+			p.id = `destinationOption${param}`;
+			p.innerHTML = param % 2 == 0 ? `Osc ${Math.ceil((param + 1) / 2)} Frequency` : `Osc ${Math.ceil((param + 1) / 2)} Gain`;
+			this.oscDestinations.push(p);
 		}
 		this.oscDests.innerHTML = "";
 		for (var param = 0; param < this.oscDestinations.length; param++) {
 			this.oscDests.appendChild(this.oscDestinations[param]);
+		}
+	}
+	updateThisDestinationList() {
+		for (var param = (this.oscDestinations).length+1; param < oscParams.length; param++) {
+			let p = document.createElement("option");
+			p.value = oscParams[param];
+			p.id = `destinationOption${param}`;
+			p.innerHTML = param % 2 == 0 ? `Osc ${Math.ceil((param + 1) / 2)} Frequency` : `Osc ${Math.ceil((param + 1) / 2)} Gain`;
+			this.oscDestinations.push(p);
+		}
+		for (var param = 1; param < this.oscDestinations.length; param++) {
+			if (!this.oscDests.contains(this.oscDestinations[param])) {
+				this.oscDests.appendChild(this.oscDestinations[param]);
+				console.log(`${this.oscDestinations[param]} appended to ${this.oscDests}`);
+			} else {
+				console.log("else");
+			}
 		}
 	}
 }
