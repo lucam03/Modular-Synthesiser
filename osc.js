@@ -188,7 +188,6 @@ class Osc {
 	}
 	updateDestination() {
 		this.oscGain.disconnect();
-		console.log(this.oscDests.value);
 		this.destination = eval(this.oscDests.value);
 		this.oscGain.connect(this.destination);
 	}
