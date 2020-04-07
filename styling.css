@@ -35,5 +35,6 @@ select{
 }
 
 canvas{
-  float:right;
+	position: fixed;
+	right: 10%;
 }

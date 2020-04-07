@@ -17,6 +17,8 @@ var canvasCtx = canvas.getContext('2d');
 //canvas dimensions
 var WIDTH = 500;
 var HEIGHT = 250;
+canvas.style.width = `${WIDTH}`;
+canvas.style.height = `${HEIGHT}`;
 playWaveform();
 
 class Osc {
@@ -258,9 +260,8 @@ function playWaveform() {
 		var x = 0;
 		//looping to get define position of wave at each point in buffer
 		for(var i = 0; i < bufferLength; i++){
-			var v = dataArray[i] / 128.0;
-			var y = v * HEIGHT/2;
-
+			var v = dataArray[i] / 128;
+			var y = (v * HEIGHT/2)-50;
 			if (i === 0) {
 				canvasCtx.moveTo(x,y);
 			} else {
