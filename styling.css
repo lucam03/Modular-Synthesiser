@@ -8,7 +8,6 @@ body{
 }
 
 .Osc{
-  width: 50%;
   border-style: solid;
 }
 
@@ -33,4 +32,8 @@ select{
   margin-right: 10px;
   margin-left: 10px;
   width: 25%;
+}
+
+canvas{
+  float:right;
 }

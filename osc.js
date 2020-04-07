@@ -1,10 +1,11 @@
 var context = new AudioContext();
-var analyser = context.createAnalyser();
-analyser.connect(context.destination);
 var oscs = document.getElementById("oscs");
+oscs.style.width = "50%"
 var oscArray = [];
 var oscParams = [];
 //creating analyser node, defining its properties for visualiser
+var analyser = context.createAnalyser();
+analyser.connect(context.destination);
 analyser.fftSize = 2048;
 //creating array for frequency and waveform
 var bufferLength = analyser.frequencyBinCount;
@@ -14,8 +15,9 @@ var dataArray = new Uint8Array(bufferLength)
 var canvas = document.getElementById('canvas');
 var canvasCtx = canvas.getContext('2d');
 //canvas dimensions
-var WIDTH = 80;
-var HEIGHT = 80;
+var WIDTH = 500;
+var HEIGHT = 250;
+playWaveform();
 
 class Osc {
 	constructor() {
@@ -23,7 +25,6 @@ class Osc {
 		this.num = Osc.numInstances;
 		//Initialise oscillator
 		this.osc = context.createOscillator();
-		this.osc.connect(analyser)
 		this.osc.hasBeenStarted = false;
 		this.osc.connected = false;
 		this.osc.frequency.value = 262;
@@ -44,6 +45,7 @@ class Osc {
 		this.updateThisDestinationList();
 		//Initialise gain
 		this.oscGain = context.createGain();
+		this.osc.connect(this.oscGain)
 		this.oscGain.connect(this.destination);
 		//Create base div for osc
 		this.oscDiv = document.createElement("div")
@@ -157,7 +159,6 @@ class Osc {
 	}
 	playOsc() {
 		this.osc.connected = true;
-		playWaveform();
 		this.osc.connect(this.oscGain);
 		this.osc.frequency.value = this.oscFrequency.value;
 		if (!this.osc.hasBeenStarted) {
@@ -255,7 +256,7 @@ function playWaveform() {
 		//width of each segment of the line to be drawn by dividing canvas
 		var sliceWidth = WIDTH * 1.0 / bufferLength;
 		var x = 0;
-		//looping to get define position of wave at each poitn in buffer
+		//looping to get define position of wave at each point in buffer
 		for(var i = 0; i < bufferLength; i++){
 			var v = dataArray[i] / 128.0;
 			var y = v * HEIGHT/2;
