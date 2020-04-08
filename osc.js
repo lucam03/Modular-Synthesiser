@@ -63,6 +63,10 @@ class Osc {
 		this.oscTitle.id = `Title${Osc.numInstances}`;
 		this.oscTitle.style.width = "100%";
 		this.oscDiv.appendChild(this.oscTitle);
+		//create div for frequency slider
+		this.freqDiv = document.createElement("div")
+		this.freqDiv.id = 'freqDiv'
+		this.freqDiv.class = 'sliderdiv'
 		//Create osc frequency slider
 		this.oscFrequency = document.createElement("input");
 		this.oscFrequency.id = `frequency${Osc.numInstances}`;
@@ -72,7 +76,12 @@ class Osc {
 		this.oscFrequency.value = 262;
 		this.oscFrequency.step = 0.1
 		this.oscFrequency.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateFrequency("S")})`);
-		this.oscDiv.appendChild(this.oscFrequency);
+		this.freqDiv.appendChild(this.oscFrequency);
+		//text for user
+		this.freqText = document.createTextNode('Frequency')
+		this.freqText.class = 'slidertext'
+		this.freqDiv.appendChild(this.freqText)
+		this.oscDiv.appendChild(this.freqDiv);
 		//Create min and max frequency boxes
 		this.manFreqInput = document.createElement("div")
 		this.maxFreqValue = document.createElement("input");
@@ -92,6 +101,10 @@ class Osc {
 		this.oscFreqVal.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateFrequency("B")})`);
 		this.manFreqInput.appendChild(this.oscFreqVal);
 		this.oscDiv.appendChild(this.manFreqInput);
+		//create div for amplitude slider
+		this.ampDiv = document.createElement("div")
+		this.ampDiv.id = 'ampDiv'
+		this.ampDiv.class = 'sliderdiv'
 		//Create amplitude slider
 		this.oscAmplitude = document.createElement("input");
 		this.oscAmplitude.id = `amplitude${Osc.numInstances}`;
@@ -101,7 +114,12 @@ class Osc {
 		this.oscAmplitude.value = 1;
 		this.oscAmplitude.step = 0.01;
 		this.oscAmplitude.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateAmplitude("S")})`);
-		this.oscDiv.appendChild(this.oscAmplitude);
+		this.ampDiv.appendChild(this.oscAmplitude)
+		//Text
+		this.ampText = document.createTextNode('Amplitude');
+		this.ampText.class = 'slidertext'
+		this.ampDiv.appendChild(this.ampText);
+		this.oscDiv.appendChild(this.ampDiv);
 		//Create min and max amplitude boxes
 		this.manAmpInput = document.createElement("div")
 		this.maxAmpValue = document.createElement("input");
@@ -121,6 +139,10 @@ class Osc {
 		this.oscAmpVal.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateAmplitude("B")})`);
 		this.manAmpInput.appendChild(this.oscAmpVal);
 		this.oscDiv.appendChild(this.manAmpInput);
+		//pan slider div
+		this.panDiv = document.createElement('div')
+		this.panDiv.id = 'panDiv'
+		this.panDiv.class = 'sliderdiv'
 		//Create panning slider
 		this.panSlider = document.createElement("input");
 		this.panSlider.id = `pan${Osc.numInstances}`;
@@ -130,7 +152,12 @@ class Osc {
 		this.panSlider.value = 0;
 		this.panSlider.step = 0.01;
 		this.panSlider.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updatePan()})`);
-		this.oscDiv.appendChild(this.panSlider);
+		this.panDiv.appendChild(this.panSlider);
+		//pan text
+		this.panText = document.createTextNode('Panning');
+		this.panText.class = 'slidertext'
+		this.panDiv.appendChild(this.panText);
+		this.oscDiv.appendChild(this.panDiv);
 		//Create play button
 		this.playButton = document.createElement("button");
 		this.playButton.innerHTML = "PLAY";

@@ -26,6 +26,10 @@ button{
   width: 10%;
 }
 
+#slidertext {
+  margin: 2px;
+}
+
 input{
   margin-right: 10px;
   margin-left: 10px;
