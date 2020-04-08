@@ -2,7 +2,6 @@ var context = new AudioContext();
 var mainVolume = context.createGain();
 mainVolume.connect(context.destination);
 var oscs = document.getElementById("oscs");
-oscs.style.width = "50%"
 var oscArray = [];
 var oscParams = [];
 //Creating analyser node, defining its properties for visualiser
