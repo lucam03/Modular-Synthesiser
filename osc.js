@@ -229,7 +229,13 @@ class Osc {
 			let p = document.createElement("option");
 			p.value = oscParams[param];
 			p.id = `destinationOption${param}`;
-			p.innerHTML = param % 2 == 0 ? `Osc ${Math.ceil((param + 1) / 2)} Frequency` : `Osc ${Math.ceil((param + 1) / 2)} Gain`;
+			if (param % 3 == 0) {
+				p.innerHTML = `Osc ${Math.ceil((param + 1) / 3)} Frequency`
+			} else if (param % 3 == 1) {
+				p.innerHTML = `Osc ${Math.ceil((param + 1) / 3)} Gain`;
+			} else {
+				p.innerHTML = `Osc ${Math.ceil((param + 1) / 3)} Panning`;
+			}
 			this.oscDestinations.push(p);
 		}
 		this.oscDests.innerHTML = "";
@@ -238,11 +244,17 @@ class Osc {
 		}
 	}
 	updateThisDestinationList() {
-		for (var param = (this.oscDestinations).length+1; param < oscParams.length; param++) {
+		for (var param = (this.oscDestinations).length+2; param < oscParams.length; param++) {
 			let p = document.createElement("option");
 			p.value = oscParams[param];
 			p.id = `destinationOption${param}`;
-			p.innerHTML = param % 2 == 0 ? `Osc ${Math.ceil((param + 1) / 2)} Frequency` : `Osc ${Math.ceil((param + 1) / 2)} Gain`;
+			if (param % 3 == 0) {
+				p.innerHTML = `Osc ${Math.ceil((param + 1) / 3)} Frequency`
+			} else if (param % 3 == 1) {
+				p.innerHTML = `Osc ${Math.ceil((param + 1) / 3)} Gain`;
+			} else {
+				p.innerHTML = `Osc ${Math.ceil((param + 1) / 3)} Panning`;
+			}
 			this.oscDestinations.push(p);
 		}
 		for (var param = 1; param < this.oscDestinations.length; param++) {
@@ -263,8 +275,10 @@ function updateDestinationList() {
 	for (var oscItem = 0; oscItem < oscArray.length; oscItem++) {
 		let f = `oscArray[${oscItem}].osc.frequency`;
 		let g = `oscArray[${oscItem}].oscGain.gain`;
+		let p = `oscArray[${oscItem}].panNode.pan`;
 		oscParams.push(f);
 		oscParams.push(g);
+		oscParams.push(p);
 	}
 	for (var oscItem = 0; oscItem < oscArray.length; oscItem++) {
 		oscArray[oscItem].updateThisDestinationList();
