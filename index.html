@@ -5,7 +5,10 @@
 </head>
 <body>
 <button type="button" id="createosc" onclick="createOsc()">CREATE OSC</button>
+<div id="fixedelements">
+<input type="range" min="0" max="3" value="1" step="0.1" id="mainVolumeSlider" style="height: 250px; width: 10px !important; -webkit-appearance: slider-vertical" oninput="updateMainVolume()">
 <canvas id="canvas"></canvas>
+</div>
 <div id="oscs"></div>
 </body>
 </html>

@@ -7,6 +7,10 @@ body{
   width: 10%;
 }
 
+#oscs{
+  width: 50%;
+}
+
 .Osc{
   border-style: solid;
 }
@@ -28,13 +32,19 @@ input{
   width: 10%;
 }
 
+input[type=range]{
+  margin-right: 10px;
+  margin-left: 10px;
+  width: 33%;
+}
+
 select{
   margin-right: 10px;
   margin-left: 10px;
   width: 25%;
 }
 
-canvas{
+#fixedelements{
 	position: fixed;
 	right: 10%;
 }

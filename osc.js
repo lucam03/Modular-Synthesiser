@@ -1,20 +1,22 @@
 var context = new AudioContext();
+var mainVolume = context.createGain();
+mainVolume.connect(context.destination);
 var oscs = document.getElementById("oscs");
 oscs.style.width = "50%"
 var oscArray = [];
 var oscParams = [];
-//creating analyser node, defining its properties for visualiser
+//Creating analyser node, defining its properties for visualiser
 var analyser = context.createAnalyser();
-analyser.connect(context.destination);
+analyser.connect(mainVolume);
 analyser.fftSize = 2048;
-//creating array for frequency and waveform
+//Creating array for frequency and waveform
 var bufferLength = analyser.frequencyBinCount;
 console.log(bufferLength)
 var dataArray = new Uint8Array(bufferLength)
-//creating canvas variable
+//Creating canvas variable
 var canvas = document.getElementById('canvas');
 var canvasCtx = canvas.getContext('2d');
-//canvas dimensions
+//Canvas dimensions
 var WIDTH = 500;
 var HEIGHT = 250;
 canvas.style.width = `${WIDTH}`;
@@ -45,10 +47,13 @@ class Osc {
 		this.oscDests.onchange = eval(`(function() {oscArray[${Osc.numInstances}].updateDestination()})`);
 		this.control.appendChild(this.oscDests);
 		this.initialiseThisDestinationList();
+		//Initialise panning
+		this.panNode = context.createStereoPanner();
+		this.panNode.connect(this.destination);
 		//Initialise gain
 		this.oscGain = context.createGain();
 		this.osc.connect(this.oscGain)
-		this.oscGain.connect(this.destination);
+		this.oscGain.connect(this.panNode);
 		//Create base div for osc
 		this.oscDiv = document.createElement("div")
 		this.oscDiv.id = `osc${Osc.numInstances}`;
@@ -67,11 +72,10 @@ class Osc {
 		this.oscFrequency.max = 440;
 		this.oscFrequency.value = 262;
 		this.oscFrequency.step = 0.1
-		this.oscFrequency.style.width = "33%";
 		this.oscFrequency.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateFrequency("S")})`);
 		this.oscDiv.appendChild(this.oscFrequency);
 		//Create min and max frequency boxes
-		this.manFreqInput = document.createElement("P")
+		this.manFreqInput = document.createElement("div")
 		this.maxFreqValue = document.createElement("input");
 		this.minFreqValue = document.createElement("input");
 		this.maxFreqValue.id = `maxF${Osc.numInstances}`;
@@ -97,11 +101,10 @@ class Osc {
 		this.oscAmplitude.max = 11;
 		this.oscAmplitude.value = 1;
 		this.oscAmplitude.step = 0.01;
-		this.oscAmplitude.style.width = "33%";
 		this.oscAmplitude.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateAmplitude("S")})`);
 		this.oscDiv.appendChild(this.oscAmplitude);
 		//Create min and max amplitude boxes
-		this.manAmpInput = document.createElement("P")
+		this.manAmpInput = document.createElement("div")
 		this.maxAmpValue = document.createElement("input");
 		this.minAmpValue = document.createElement("input");
 		this.maxAmpValue.id = `maxA${Osc.numInstances}`;
@@ -119,6 +122,16 @@ class Osc {
 		this.oscAmpVal.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateAmplitude("B")})`);
 		this.manAmpInput.appendChild(this.oscAmpVal);
 		this.oscDiv.appendChild(this.manAmpInput);
+		//Create panning slider
+		this.panSlider = document.createElement("input");
+		this.panSlider.id = `pan${Osc.numInstances}`;
+		this.panSlider.type = "range";
+		this.panSlider.min = -1;
+		this.panSlider.max = 1;
+		this.panSlider.value = 0;
+		this.panSlider.step = 0.01;
+		this.panSlider.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updatePan()})`);
+		this.oscDiv.appendChild(this.panSlider);
 		//Create play button
 		this.playButton = document.createElement("button");
 		this.playButton.innerHTML = "PLAY";
@@ -194,6 +207,9 @@ class Osc {
 			this.oscAmplitude.value = this.oscAmpVal.value;
 		}
 	}
+	updatePan() {
+		this.panNode.pan.value = this.panSlider.value;
+	}
 	updateMinMax() {
 		this.oscFrequency.max = this.maxFreqValue.value;
 		this.oscFrequency.min = this.minFreqValue.value;
@@ -233,9 +249,6 @@ class Osc {
 		for (var param = 1; param < this.oscDestinations.length; param++) {
 			if (!this.oscDests.contains(this.oscDestinations[param])) {
 				this.oscDests.appendChild(this.oscDestinations[param]);
-				console.log(`${this.oscDestinations[param]} appended to ${this.oscDests}`);
-			} else {
-				console.log("else");
 			}
 		}
 	}
@@ -257,6 +270,10 @@ function updateDestinationList() {
 	for (var oscItem = 0; oscItem < oscArray.length; oscItem++) {
 		oscArray[oscItem].updateThisDestinationList();
 	}
+}
+
+function updateMainVolume() {
+	mainVolume.gain.value = document.getElementById("mainVolumeSlider").value;
 }
 
 function playWaveform() {
