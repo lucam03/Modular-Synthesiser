@@ -35,7 +35,7 @@ class Osc {
 		this.destination = analyser;
 		//Initialise destinations
 		this.mainDestination = document.createElement("option");
-		this.mainDestination.value = `analyser`;
+		this.mainDestination.value = `oscArray[${Osc.numInstances}].panNode`;
 		this.mainDestination.innerHTML = "Audio OUT";
 		this.oscDestinations = [this.mainDestination];
 		//Create control div
