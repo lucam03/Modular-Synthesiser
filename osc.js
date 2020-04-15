@@ -35,15 +35,13 @@ class Osc {
 		this.destination = analyser;
 		//Initialise destinations
 		this.mainDestination = document.createElement("option");
-		this.mainDestination.value = `oscArray[${Osc.numInstances}].panNode`;
-		this.mainDestination.innerHTML = "Audio OUT";
+		setAttributes(this.mainDestination, {"value":`oscArray[${Osc.numInstances}].panNode`, "innerHTML":"Audio OUT"});
 		this.oscDestinations = [this.mainDestination];
 		//Create control div
 		this.control = document.createElement("div")
 		//Create destination dropdown
 		this.oscDests = document.createElement("select");
-		this.oscDests.id = `destination${Osc.numInstances}`;
-		this.oscDests.onchange = eval(`(function() {oscArray[${Osc.numInstances}].updateDestination()})`);
+		setAttributes(this.oscDests, {"id":`destination${Osc.numInstances}`, "onchange":eval(`(function() {oscArray[${Osc.numInstances}].updateDestination()})`)});
 		this.control.appendChild(this.oscDests);
 		this.initialiseThisDestinationList();
 		//Initialise panning
@@ -55,138 +53,93 @@ class Osc {
 		this.oscGain.connect(this.panNode);
 		//Create base div for osc
 		this.oscDiv = document.createElement("div")
-		this.oscDiv.id = `osc${Osc.numInstances}`;
-		this.oscDiv.className = "Osc"
+		setAttributes(this.oscDiv, {"id":`osc${Osc.numInstances}`, "className":"Osc"});
 		//Create osc title
 		this.oscTitle = document.createElement("h4");
-		this.oscTitle.innerHTML = `Oscillator ${Osc.numInstances + 1}`;
-		this.oscTitle.id = `Title${Osc.numInstances}`;
-		this.oscTitle.style.width = "100%";
+		setAttributes(this.oscTitle, {"innerHTML":`Oscillator ${Osc.numInstances + 1}`, "id":`Title${Osc.numInstances}`, "style":"width: 100%"});
 		this.oscDiv.appendChild(this.oscTitle);
 		//create div for frequency slider
-		this.freqDiv = document.createElement("div")
-		this.freqDiv.id = 'freqDiv'
-		this.freqDiv.class = 'sliderdiv'
+		this.freqDiv = document.createElement("div");
+		this.freqDiv.className = 'sliderdiv';
 		//Create osc frequency slider
 		this.oscFrequency = document.createElement("input");
-		this.oscFrequency.id = `frequency${Osc.numInstances}`;
-		this.oscFrequency.type = "range";
-		this.oscFrequency.min = 0;
-		this.oscFrequency.max = 440;
-		this.oscFrequency.value = 262;
-		this.oscFrequency.step = 0.1
-		this.oscFrequency.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateFrequency("S")})`);
+		setAttributes(this.oscFrequency, {"id":`frequency${Osc.numInstances}`, "type":"range", "min":0, "max":440, "value":262, "step":0.1, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updateFrequency("S")})`)});
 		this.freqDiv.appendChild(this.oscFrequency);
 		//text for user
 		this.freqText = document.createTextNode('Frequency')
-		this.freqText.class = 'slidertext'
+		this.freqText.className = 'slidertext'
 		this.freqDiv.appendChild(this.freqText)
 		this.oscDiv.appendChild(this.freqDiv);
 		//Create min and max frequency boxes
 		this.manFreqInput = document.createElement("div")
 		this.maxFreqValue = document.createElement("input");
 		this.minFreqValue = document.createElement("input");
-		this.maxFreqValue.id = `maxF${Osc.numInstances}`;
-		this.minFreqValue.id = `minF${Osc.numInstances}`;
-		this.maxFreqValue.value = 440;
-		this.minFreqValue.value = 0;
-		this.maxFreqValue.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateMinMax()})`);
-		this.minFreqValue.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateMinMax()})`);
+		setAttributes(this.minFreqValue, {"id":`minF${Osc.numInstances}`, "value":0, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updateMinMax()})`)});
+		setAttributes(this.maxFreqValue, {"id":`maxF${Osc.numInstances}`, "value":440, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updateMinMax()})`)});
 		this.manFreqInput.appendChild(this.minFreqValue);
 		this.manFreqInput.appendChild(this.maxFreqValue);
 		//Create current frequency box
 		this.oscFreqVal = document.createElement("input");
-		this.oscFreqVal.id = `freqValue${Osc.numInstances}`;
-		this.oscFreqVal.value = 262;
-		this.oscFreqVal.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateFrequency("B")})`);
+		setAttributes(this.oscFreqVal, {"id":`freqValue${Osc.numInstances}`, "value":262, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updateFrequency("B")})`)});
 		this.manFreqInput.appendChild(this.oscFreqVal);
 		this.oscDiv.appendChild(this.manFreqInput);
 		//create div for amplitude slider
-		this.ampDiv = document.createElement("div")
-		this.ampDiv.id = 'ampDiv'
-		this.ampDiv.class = 'sliderdiv'
+		this.ampDiv = document.createElement("div");
+		this.ampDiv.className = 'sliderdiv';
 		//Create amplitude slider
 		this.oscAmplitude = document.createElement("input");
-		this.oscAmplitude.id = `amplitude${Osc.numInstances}`;
-		this.oscAmplitude.type = "range";
-		this.oscAmplitude.min = 0;
-		this.oscAmplitude.max = 11;
-		this.oscAmplitude.value = 1;
-		this.oscAmplitude.step = 0.01;
-		this.oscAmplitude.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateAmplitude("S")})`);
+		setAttributes(this.oscAmplitude, {"id":`amplitude${Osc.numInstances}`, "type":"range", "min":0, "max":11, "value":1, "step":0.01, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updateAmplitude("S")})`)});
 		this.ampDiv.appendChild(this.oscAmplitude)
 		//Text
 		this.ampText = document.createTextNode('Amplitude');
-		this.ampText.class = 'slidertext'
+		this.ampText.className = 'slidertext';
 		this.ampDiv.appendChild(this.ampText);
 		this.oscDiv.appendChild(this.ampDiv);
 		//Create min and max amplitude boxes
 		this.manAmpInput = document.createElement("div")
 		this.maxAmpValue = document.createElement("input");
 		this.minAmpValue = document.createElement("input");
-		this.maxAmpValue.id = `maxA${Osc.numInstances}`;
-		this.minAmpValue.id = `minA${Osc.numInstances}`;
-		this.maxAmpValue.value = 11;
-		this.minAmpValue.value = 0;
-		this.maxAmpValue.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateMinMax()})`);
-		this.minAmpValue.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateMinMax()})`);
+		setAttributes(this.minAmpValue, {"id":`minA${Osc.numInstances}`, "value":0, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updateMinMax()})`)});
+		setAttributes(this.maxAmpValue, {"id":`maxA${Osc.numInstances}`, "value":11, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updateMinMax()})`)});
 		this.manAmpInput.appendChild(this.minAmpValue);
 		this.manAmpInput.appendChild(this.maxAmpValue);
 		//Create current amplitude box
 		this.oscAmpVal = document.createElement("input");
-		this.oscAmpVal.id = `ampValue${Osc.numInstances}`;
-		this.oscAmpVal.value = 1;
-		this.oscAmpVal.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updateAmplitude("B")})`);
+		setAttributes(this.oscAmpVal, {"id":`ampValue${Osc.numInstances}`, "value":1, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updateAmplitude("B")})`)});
 		this.manAmpInput.appendChild(this.oscAmpVal);
 		this.oscDiv.appendChild(this.manAmpInput);
 		//pan slider div
-		this.panDiv = document.createElement('div')
-		this.panDiv.id = 'panDiv'
-		this.panDiv.class = 'sliderdiv'
+		this.panDiv = document.createElement('div');
+		this.panDiv.className = 'sliderdiv';
 		//Create panning slider
 		this.panSlider = document.createElement("input");
-		this.panSlider.id = `pan${Osc.numInstances}`;
-		this.panSlider.type = "range";
-		this.panSlider.min = -1;
-		this.panSlider.max = 1;
-		this.panSlider.value = 0;
-		this.panSlider.step = 0.01;
-		this.panSlider.oninput = eval(`(function() {oscArray[${Osc.numInstances}].updatePan()})`);
+		setAttributes(this.panSlider, {"id":`panSlider${Osc.numInstances}`, "type":"range", "min":-1, "max":1, "value":0, "step":0.01, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updatePan()})`)});
 		this.panDiv.appendChild(this.panSlider);
 		//pan text
 		this.panText = document.createTextNode('Panning');
-		this.panText.class = 'slidertext'
+		this.panText.className = 'slidertext';
 		this.panDiv.appendChild(this.panText);
 		this.oscDiv.appendChild(this.panDiv);
 		//Create play button
 		this.playButton = document.createElement("button");
-		this.playButton.innerHTML = "PLAY";
-		this.playButton.id = `play${Osc.numInstances}`;
-		this.playButton.onclick = eval(`(function() {oscArray[${Osc.numInstances}].playOsc()})`);
+		setAttributes(this.playButton, {"innerHTML":"PLAY", "id":`playButton${Osc.numInstances}`, "onclick":eval(`(function() {oscArray[${Osc.numInstances}].playOsc()})`)});
 		this.control.appendChild(this.playButton);
 		//Create stop button
 		this.stopButton = document.createElement("button");
-		this.stopButton.innerHTML = "STOP";
-		this.stopButton.id = `stop${Osc.numInstances}`;
-		this.stopButton.onclick = eval(`(function() {oscArray[${Osc.numInstances}].stopOsc()})`);
+		setAttributes(this.stopButton, {"innerHTML":"STOP", "id":`stopButton${Osc.numInstances}`, "onclick":eval(`(function() {oscArray[${Osc.numInstances}].stopOsc()})`)});
 		this.control.appendChild(this.stopButton);
 		//Define waveshapes
 		this.sineWave = document.createElement("option");
-		this.sineWave.value = "sine";
-		this.sineWave.innerHTML = "Sine";
 		this.squareWave = document.createElement("option");
-		this.squareWave.value = "square";
-		this.squareWave.innerHTML = "Square";
 		this.sawWave = document.createElement("option");
-		this.sawWave.value = "sawtooth";
-		this.sawWave.innerHTML = "Sawtooth";
 		this.triangleWave = document.createElement("option");
-		this.triangleWave.value = "triangle";
-		this.triangleWave.innerHTML = "Triangle";
+		setAttributes(this.sineWave, {"value":"sine", "innerHTML":"Sine"});
+		setAttributes(this.squareWave, {"value":"square", "innerHTML":"Square"});
+		setAttributes(this.sawWave, {"value":"sawtooth", "innerHTML":"Sawtooth"});
+		setAttributes(this.triangleWave, {"value":"triangle", "innerHTML":"Triangle"});
 		//Create waveshape dropdown
 		this.oscShape = document.createElement("select");
-		this.oscShape.id = `shape${Osc.numInstances}`;
-		this.oscShape.onchange = eval(`(function() {oscArray[${Osc.numInstances}].updateWaveShape()})`);
+		setAttributes(this.oscShape, {"id":`shape${Osc.numInstances}`, "onchange":eval(`(function() {oscArray[${Osc.numInstances}].updateWaveShape()})`)});
 		this.oscShape.appendChild(this.sineWave);
 		this.oscShape.appendChild(this.squareWave);
 		this.oscShape.appendChild(this.sawWave);
@@ -314,6 +267,12 @@ function updateDestinationList() {
 
 function updateMainVolume() {
 	mainVolume.gain.value = document.getElementById("mainVolumeSlider").value;
+}
+
+function setAttributes(object, attrs) {
+		for (var attr in attrs) {
+			object[attr] = attrs[attr]
+		}
 }
 
 function playWaveform() {
