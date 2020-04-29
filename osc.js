@@ -53,7 +53,7 @@ class Osc {
 		this.oscGain.connect(this.panNode);
 		//Create base div for osc
 		this.oscDiv = document.createElement("div")
-		setAttributes(this.oscDiv, {"id":`osc${Osc.numInstances}`, "className":"Osc"});
+		setAttributes(this.oscDiv, {"id":`osc${Osc.numInstances}`, "className":"Osc oscOff"});
 		//Create osc title
 		this.oscTitle = document.createElement("h4");
 		setAttributes(this.oscTitle, {"innerHTML":`Oscillator ${Osc.numInstances + 1}`, "id":`Title${Osc.numInstances}`, "style":"width: 100%"});
@@ -154,7 +154,8 @@ class Osc {
 	playOsc() {
 		this.osc.connected = true;
 		this.osc.connect(this.oscGain);
-		this.osc.frequency.value = this.oscFrequency.value;
+		this.oscDiv.className = "Osc oscOn"
+
 		if (!this.osc.hasBeenStarted) {
 			this.osc.start();
 			this.osc.hasBeenStarted = true;
@@ -164,6 +165,7 @@ class Osc {
 	stopOsc() {
 		if (this.osc.connected) {
 			this.osc.disconnect(this.oscGain);
+			this.oscDiv.className = "Osc oscOff"
 			this.osc.connected = false;
 			console.log("Stopped");
 		}

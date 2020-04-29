@@ -23,12 +23,19 @@ body{
 
 .Osc{
   border-style: solid;
-  background-color: #3B4251;
   text-align: center;
   border-color: #2E3440;
   border-width: 5px;
   display: inline-block;
   width: 30%;
+}
+
+.oscOff {
+  background-color: #3B4251;
+}
+
+.oscOn {
+  background-color: #5B6271;
 }
 
 h4{
@@ -81,4 +88,8 @@ select{
 	right: 0px;
   width: 30%;
   text-align: center;
+}
+
+#mainVolumeSlider {
+  width: 50%;
 }
