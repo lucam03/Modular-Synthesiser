@@ -1,33 +1,59 @@
+@font-face {
+  font-family: Sen-Regular;
+  src: url(./Sen-Regular.ttf);
+}
+
+* {
+  font-family: Sen-Regular;
+}
+
 body{
+  background-color: #E5E9F0;
 }
 
 #createosc{
   margin-right: 10px;
   margin-left: 10px;
-  width: 10%;
+  width: 50%;
 }
 
 #oscs{
-  width: 50%;
+  width: 75%;
 }
 
 .Osc{
   border-style: solid;
+  background-color: #3B4251;
+  text-align: center;
+  border-color: #2E3440;
+  border-width: 5px;
+  display: inline-block;
+  width: 30%;
 }
 
 h4{
-  font-style: italic;
   font-weight: bold;
+  color: #E5E9F0;
+  margin-left: 10px;
 }
 
 button{
+  display: inline-block;
   margin-right: 10px;
   margin-left: 10px;
-  width: 10%;
+  padding: 1% 1%;
+  border-radius: 10px;
+  border-width: 2px;
+  background-color: #BD626B;
+  border-color: #2E3440;
+  border-style: solid;
+  color: #E5E9F0;
 }
 
-#slidertext {
-  margin: 2px;
+.slidertext {
+  margin-left: 5%;
+  color: #E5E9F0;
+  display: inline-block;
 }
 
 input{
@@ -39,7 +65,9 @@ input{
 input[type=range]{
   margin-right: 10px;
   margin-left: 10px;
-  width: 33%;
+  width: 25%;
+  height: 5%;
+  display: inline-block;
 }
 
 select{
@@ -50,5 +78,7 @@ select{
 
 #fixedelements{
 	position: fixed;
-	right: 10%;
+	right: 0px;
+  width: 30%;
+  text-align: center;
 }

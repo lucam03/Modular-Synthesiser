@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <title>Modular Synthesiser</title>
     <link href="styles.css" rel="stylesheet" type="text/css">
     <script src="osc.js" defer></script>
   </head>
   <body>
-    <button type="button" id="createosc" onclick="createOsc()">CREATE OSC</button>
+    <br><br>
     <div id="fixedelements">
-      <input type="range" min="0" max="3" value="1" step="0.1" id="mainVolumeSlider" style="height: 250px; width: 10px !important; -webkit-appearance: slider-vertical" oninput="updateMainVolume()">
+      <button type="button" id="createosc" onclick="createOsc()">CREATE OSC</button><br><br>
+      <input type="range" min="0" max="3" value="1" step="0.1" id="mainVolumeSlider" oninput="updateMainVolume()"><br><br>
       <canvas id="canvas"></canvas>
     </div>
     <div id="oscs"></div>
