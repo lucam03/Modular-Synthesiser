@@ -16,10 +16,10 @@ var dataArray = new Uint8Array(bufferLength)
 var canvas = document.getElementById('canvas');
 var canvasCtx = canvas.getContext('2d');
 //Canvas dimensions
-var WIDTH = 500;
-var HEIGHT = 250;
-canvas.style.width = `${WIDTH}`;
-canvas.style.height = `${HEIGHT}`;
+var WIDTH = 300;
+var HEIGHT = 150;
+canvas.width = `${WIDTH}`;
+canvas.height = `${HEIGHT}`;
 playWaveform();
 
 class Osc {
@@ -292,18 +292,19 @@ function playWaveform() {
 		//time domain data
 		analyser.getByteTimeDomainData(dataArray);
 		//canvas settings
-		canvasCtx.fillStyle = 'rgb(200,200,200)';
+		canvasCtx.fillStyle = '#7B8291';
 		canvasCtx.fillRect( 0, 0, WIDTH, HEIGHT);
 		canvasCtx.lineWidth = 2;
-		canvasCtx.strokeStyle = 'rgb(0,0,0)';
+		canvasCtx.strokeStyle = '#3B4251';
 		canvasCtx.beginPath();
 		//width of each segment of the line to be drawn by dividing canvas
 		var sliceWidth = WIDTH * 1.0 / bufferLength;
 		var x = 0;
+		const ampCoefficient = 1;
 		//looping to get define position of wave at each point in buffer
 		for(var i = 0; i < bufferLength; i++){
-			var v = dataArray[i] / 128;
-			var y = (v * HEIGHT/2)-50;
+			var v = ampCoefficient * dataArray[i] / 128;
+			var y = v * HEIGHT/2;
 			if (i === 0) {
 				canvasCtx.moveTo(x,y);
 			} else {

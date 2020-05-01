@@ -15,7 +15,10 @@ body{
 #createosc{
   margin-right: 10px;
   margin-left: 10px;
-  width: 50%;
+  width: 80%;
+  font-size: 150%;
+  font-weight: bold;
+  border-width: 5px;
 }
 
 #oscs{
@@ -89,11 +92,26 @@ option{
 
 #fixedelements{
 	position: fixed;
-	right: 0px;
-  width: 30%;
+	right: 5%;
+  width: 20%;
   text-align: center;
+  border-style: solid;
+  border-color: #2E3440;
+  border-width: 5px;
+  display: inline-block;
+  background-color: #3B4251;
 }
 
 #mainVolumeSlider {
   width: 50%;
+  display: inline-block;
+}
+
+#mainVolumeText {
+  width: 30%;
+  display: inline-block;
+}
+
+canvas {
+  border-radius: 10px;
 }

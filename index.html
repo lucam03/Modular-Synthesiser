@@ -8,9 +8,11 @@
   <body>
     <br><br>
     <div id="fixedelements">
-      <button type="button" id="createosc" onclick="createOsc()">CREATE OSC</button><br><br>
+      <br>
+      <button type="button" id="createosc" onclick="createOsc()">CREATE OSC</button>
+      <h4 id="mainVolumeText"> Main Volume Slider </h4>
       <input type="range" min="0" max="3" value="1" step="0.1" id="mainVolumeSlider" oninput="updateMainVolume()"><br><br>
-      <canvas id="canvas"></canvas>
+      <canvas id="canvas"></canvas><br><br>
     </div>
     <div id="oscs"></div>
   </body>
