@@ -75,13 +75,16 @@ class Osc {
 		this.maxFreqValue = document.createElement("input");
 		this.minFreqValue = document.createElement("input");
 		setAttributes(this.minFreqValue, {"id":`minF${Osc.numInstances}`, "value":0, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updateMinMax()})`)});
-		setAttributes(this.maxFreqValue, {"id":`maxF${Osc.numInstances}`, "value":440, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updateMinMax()})`)});
-		this.manFreqInput.appendChild(this.minFreqValue);
-		this.manFreqInput.appendChild(this.maxFreqValue);
+		setAttributes(this.maxFreqValue, {"id":`maxF${Osc.numInstances}`, "value":"440", "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updateMinMax()})`)});
 		//Create current frequency box
 		this.oscFreqVal = document.createElement("input");
 		setAttributes(this.oscFreqVal, {"id":`freqValue${Osc.numInstances}`, "value":262, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updateFrequency("B")})`)});
+		this.manFreqInput.appendChild(document.createTextNode("Min"));
+		//Append inputs to osc
+		this.manFreqInput.appendChild(this.minFreqValue);
 		this.manFreqInput.appendChild(this.oscFreqVal);
+		this.manFreqInput.appendChild(this.maxFreqValue);
+		this.manFreqInput.appendChild(document.createTextNode("Max"));
 		this.oscDiv.appendChild(this.manFreqInput);
 		//create div for amplitude slider
 		this.ampDiv = document.createElement("div");
@@ -101,12 +104,15 @@ class Osc {
 		this.minAmpValue = document.createElement("input");
 		setAttributes(this.minAmpValue, {"id":`minA${Osc.numInstances}`, "value":0, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updateMinMax()})`)});
 		setAttributes(this.maxAmpValue, {"id":`maxA${Osc.numInstances}`, "value":11, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updateMinMax()})`)});
-		this.manAmpInput.appendChild(this.minAmpValue);
-		this.manAmpInput.appendChild(this.maxAmpValue);
 		//Create current amplitude box
 		this.oscAmpVal = document.createElement("input");
 		setAttributes(this.oscAmpVal, {"id":`ampValue${Osc.numInstances}`, "value":1, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updateAmplitude("B")})`)});
+		//Append inputs to osc
+		this.manAmpInput.appendChild(document.createTextNode("Min"));
+		this.manAmpInput.appendChild(this.minAmpValue);
 		this.manAmpInput.appendChild(this.oscAmpVal);
+		this.manAmpInput.appendChild(this.maxAmpValue);
+		this.manAmpInput.appendChild(document.createTextNode("Max"));
 		this.oscDiv.appendChild(this.manAmpInput);
 		//pan slider div
 		this.panDiv = document.createElement('div');

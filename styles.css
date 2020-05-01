@@ -5,6 +5,7 @@
 
 * {
   font-family: Sen-Regular;
+  color: #E5E9F0;
 }
 
 body{
@@ -40,7 +41,6 @@ body{
 
 h4{
   font-weight: bold;
-  color: #E5E9F0;
   margin-left: 10px;
 }
 
@@ -54,12 +54,10 @@ button{
   background-color: #BD626B;
   border-color: #2E3440;
   border-style: solid;
-  color: #E5E9F0;
 }
 
 .slidertext {
   margin-left: 5%;
-  color: #E5E9F0;
   display: inline-block;
 }
 
@@ -67,6 +65,7 @@ input{
   margin-right: 10px;
   margin-left: 10px;
   width: 10%;
+  color: black;
 }
 
 input[type=range]{
@@ -81,6 +80,11 @@ select{
   margin-right: 10px;
   margin-left: 10px;
   width: 25%;
+  color: black;
+}
+
+option{
+  color: black;
 }
 
 #fixedelements{
