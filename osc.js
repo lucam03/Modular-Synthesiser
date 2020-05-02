@@ -316,6 +316,86 @@ function updateFiltersMinMax() {
 	document.getElementById("highPass").max = document.getElementById("maxHighPass").value;
 }
 
+function createPresetJSON() {
+	var dlButton = document.getElementById("presetDownloader");
+	var preset = {}
+	preset["mainVolume"] = mainVolume.gain.value;
+	preset["lowPass"] = lowPass.frequency.value;
+	preset["lowPassMin"] = document.getElementById("lowPass").min;
+	preset["lowPassMax"] = document.getElementById("lowPass").max;
+	preset["highPass"] = highPass.frequency.value;
+	preset["highPassMin"] = document.getElementById("highPass").min;
+	preset["highPassMax"] = document.getElementById("highPass").max;
+	preset["numOscs"] = 0;
+	preset["oscArray"] = [];
+	for (let index = 0; index < oscArray.length; index++) {
+		preset["numOscs"] ++;
+		preset["oscArray"].push(new Object());
+		preset["oscArray"][index]["frequency"] = oscArray[index].osc.frequency.value;
+		preset["oscArray"][index]["frequencyMin"] = oscArray[index].oscFrequency.min;
+		preset["oscArray"][index]["frequencyMax"] = oscArray[index].oscFrequency.max;
+		preset["oscArray"][index]["gain"] = oscArray[index].oscGain.gain.value;
+		preset["oscArray"][index]["gainMin"] = oscArray[index].oscAmplitude.min;
+		preset["oscArray"][index]["gainMax"] = oscArray[index].oscAmplitude.max;
+		preset["oscArray"][index]["pan"] = oscArray[index].panNode.pan.value;
+		preset["oscArray"][index]["destination"] = oscArray[index].oscDests.value;
+		preset["oscArray"][index]["type"] = oscArray[index].osc.type;
+	}
+	presetJSON = "data:text/json;charset=utf-8,"+ encodeURIComponent(JSON.stringify(preset));
+	dlButton.href = presetJSON;
+}
+
+async function loadPreset() {
+	var preset = document.getElementById("presetUploader").files[0];
+	var reader = new FileReader()
+	reader.readAsText(preset);
+	oscArray = [];
+	oscParams = [];
+	delete Osc.numInstances;
+	document.getElementById("oscs").innerHTML = "";
+	//Doesn't work without this (I think it tries to read the result before it's finished reading)
+	await new Promise(r => setTimeout(r, 2000));
+	preset = JSON.parse(reader.result);
+
+	document.getElementById("mainVolumeSlider").value = preset["mainVolume"];
+	updateMainVolume();
+
+	document.getElementById("minLowPass").value = preset["lowPassMin"];
+	document.getElementById("maxLowPass").value = preset["lowPassMax"];
+	document.getElementById("minHighPass").value = preset["highPassMin"];
+	document.getElementById("maxHighPass").value = preset["highPassMax"];
+	updateFiltersMinMax();
+
+	document.getElementById("lowPass").value = preset["lowPass"];;
+	document.getElementById("highPass").value = preset["highPass"];
+	updateFilters("S");
+
+	for (let i = 0; i < preset["numOscs"]; i++) {
+		createOsc()
+
+		oscArray[i].maxFreqValue.value = preset["oscArray"][i]["frequencyMax"];
+		oscArray[i].minFreqValue.value = preset["oscArray"][i]["frequencyMin"];
+		oscArray[i].maxAmpValue.value = preset["oscArray"][i]["gainMax"];
+		oscArray[i].minAmpValue.value = preset["oscArray"][i]["gainMin"];
+		oscArray[i].updateMinMax();
+
+		oscArray[i].oscFrequency.value = preset["oscArray"][i]["frequency"];
+		oscArray[i].updateFrequency("S");
+
+		oscArray[i].oscAmplitude.value = preset["oscArray"][i]["gain"];
+		oscArray[i].updateAmplitude("S");
+
+		oscArray[i].panSlider.value = preset["oscArray"][i]["pan"];
+		oscArray[i].updatePan();
+
+		oscArray[i].osc.type = preset["oscArray"][i]["type"];
+	}
+	for (let i = 0; i < preset["numOscs"]; i++) {
+		oscArray[i].oscDests.value = preset["oscArray"][i]["destination"];
+		oscArray[i].updateDestination();
+	}
+}
+
 function playWaveform() {
 	//clears canvas
 	canvasCtx.clearRect( 0, 0, WIDTH, HEIGHT);

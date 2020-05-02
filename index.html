@@ -32,9 +32,14 @@
         Min<input id="minLowPass" value="0" oninput="updateFiltersMinMax()">
         <input id="valueLowPass" value="16000" oninput="updateFilters('B')">
         <input id="maxLowPass" value="16000" oninput="updateFiltersMinMax()">Max
-    </div>
-    <br>
+    </div><br>
 
+    <h4>Load/Save Preset</h4>
+    <div>
+      <input type="file" id="presetUploader" accept=".json" onchange="loadPreset()"><br><br>
+      <input type="button" id="presetPrep" onclick="createPresetJSON()" value="Prepare Download"><br><br>
+      <a id="presetDownloader" download="preset.json">Download Preset</a><br><br>
+    </div>
     </div>
     <div id="oscs"></div>
   </body>
