@@ -10,9 +10,31 @@
     <div id="fixedelements">
       <br>
       <button type="button" id="createosc" onclick="createOsc()">CREATE OSC</button>
-      <h4 id="mainVolumeText"> Main Volume Slider </h4>
-      <input type="range" min="0" max="3" value="1" step="0.1" id="mainVolumeSlider" oninput="updateMainVolume()"><br><br>
-      <canvas id="canvas"></canvas><br><br>
+
+      <h4 class="fixedText"> Master Volume </h4><br>
+      <input type="range" min="0" max="3" value="1" step="0.01" id="mainVolumeSlider" oninput="updateMainVolume()"><br><br>
+
+      <canvas id="canvas"></canvas>
+
+      <div>
+        <h4 class="fixedText"> High Pass </h4><br>
+        <input type="range" min="0" max="16000" value="0" step="0.01" id="highPass" class="filterSlider" oninput="updateFilters('S')"><br><br>
+      </div><div>
+        Min<input id="minHighPass" value="0" oninput="updateFiltersMinMax()">
+        <input id="valueHighPass" value="0" oninput="updateFilters('B')">
+        <input id="maxHighPass" value="16000" oninput="updateFiltersMinMax()">Max
+      </div>
+
+      <div>
+        <h4 class="fixedText"> Low Pass </h4><br>
+        <input type="range" min="0" max="16000" value="16000" step="0.01" id="lowPass" class="filterSlider" oninput="updateFilters('S')"><br><br>
+      </div><div>
+        Min<input id="minLowPass" value="0" oninput="updateFiltersMinMax()">
+        <input id="valueLowPass" value="16000" oninput="updateFilters('B')">
+        <input id="maxLowPass" value="16000" oninput="updateFiltersMinMax()">Max
+    </div>
+    <br>
+
     </div>
     <div id="oscs"></div>
   </body>

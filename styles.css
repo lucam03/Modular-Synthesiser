@@ -107,11 +107,16 @@ option{
   display: inline-block;
 }
 
-#mainVolumeText {
+.fixedText {
   width: 30%;
   display: inline-block;
 }
 
 canvas {
   border-radius: 10px;
+}
+
+.filterSlider {
+  width: 50% !important;
+  display: inline-block;
 }

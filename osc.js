@@ -1,3 +1,4 @@
+//Defining audio context
 var context = new AudioContext();
 var mainVolume = context.createGain();
 mainVolume.connect(context.destination);
@@ -8,10 +9,18 @@ var oscParams = [];
 var analyser = context.createAnalyser();
 analyser.connect(mainVolume);
 analyser.fftSize = 2048;
+//Create highpass+lowpass filters
+var lowPass = context.createBiquadFilter();
+lowPass.type = "lowpass";
+lowPass.frequency.value = 22050;
+lowPass.connect(analyser);
+var highPass = context.createBiquadFilter();
+highPass.type = "highpass";
+highPass.frequency.value = 0;
+highPass.connect(lowPass);
 //Creating array for frequency and waveform
 var bufferLength = analyser.frequencyBinCount;
-console.log(bufferLength)
-var dataArray = new Uint8Array(bufferLength)
+var dataArray = new Uint8Array(bufferLength);
 //Creating canvas variable
 var canvas = document.getElementById('canvas');
 var canvasCtx = canvas.getContext('2d');
@@ -32,11 +41,14 @@ class Osc {
 		this.osc.connected = false;
 		this.osc.frequency.value = 262;
 		this.osc.type = "sine";
-		this.destination = analyser;
+		this.destination = highPass;
 		//Initialise destinations
 		this.mainDestination = document.createElement("option");
 		setAttributes(this.mainDestination, {"value":`oscArray[${Osc.numInstances}].panNode`, "innerHTML":"Audio OUT"});
-		this.oscDestinations = [this.mainDestination];
+		this.lowPassDest = document.createElement("option");
+		setAttributes(this.lowPassDest, {"value":"lowPass.frequency", "innerHTML":"Low Pass"});
+		this.highPassDest = document.createElement("option");
+		setAttributes(this.highPassDest, {"value":"highPass.frequency", "innerHTML":"High Pass"});
 		//Create control div
 		this.control = document.createElement("div")
 		//Create destination dropdown
@@ -212,7 +224,7 @@ class Osc {
 		this.oscGain.connect(this.destination);
 	}
 	initialiseThisDestinationList() {
-		this.oscDestinations = [this.mainDestination];
+		this.oscDestinations = [this.mainDestination, this.lowPassDest, this.highPassDest];
 		for (var param = 0; param < oscParams.length; param++) {
 			let p = document.createElement("option");
 			p.value = oscParams[param];
@@ -232,7 +244,7 @@ class Osc {
 		}
 	}
 	updateThisDestinationList() {
-		for (var param = (this.oscDestinations).length+2; param < oscParams.length; param++) {
+		for (var param = this.oscDestinations.length; param < oscParams.length; param++) {
 			let p = document.createElement("option");
 			p.value = oscParams[param];
 			p.id = `destinationOption${param}`;
@@ -245,7 +257,7 @@ class Osc {
 			}
 			this.oscDestinations.push(p);
 		}
-		for (var param = 1; param < this.oscDestinations.length; param++) {
+		for (var param = 3; param < this.oscDestinations.length; param++) {
 			if (!this.oscDests.contains(this.oscDestinations[param])) {
 				this.oscDests.appendChild(this.oscDestinations[param]);
 			}
@@ -279,8 +291,29 @@ function updateMainVolume() {
 
 function setAttributes(object, attrs) {
 		for (var attr in attrs) {
-			object[attr] = attrs[attr]
+			object[attr] = attrs[attr];
 		}
+}
+
+function updateFilters(type) {
+	if (type=="S") {
+		lowPass.frequency.value = document.getElementById("lowPass").value;
+		highPass.frequency.value = document.getElementById("highPass").value;
+		document.getElementById("valueLowPass").value = document.getElementById("lowPass").value;
+		document.getElementById("valueHighPass").value = document.getElementById("highPass").value;
+	} else {
+		lowPass.frequency.value = document.getElementById("valueLowPass").value;
+		highPass.frequency.value = document.getElementById("valueHighPass").value;
+		document.getElementById("lowPass").value = document.getElementById("valueLowPass").value;
+		document.getElementById("highPass").value = document.getElementById("valueHighPass").value;
+	}
+}
+
+function updateFiltersMinMax() {
+	document.getElementById("lowPass").min = document.getElementById("minLowPass").value;
+	document.getElementById("lowPass").max = document.getElementById("maxLowPass").value;
+	document.getElementById("highPass").min = document.getElementById("minHighPass").value;
+	document.getElementById("highPass").max = document.getElementById("maxHighPass").value;
 }
 
 function playWaveform() {
