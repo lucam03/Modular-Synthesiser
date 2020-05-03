@@ -341,22 +341,26 @@ function createPresetJSON() {
 		preset["oscArray"][index]["destination"] = oscArray[index].oscDests.value;
 		preset["oscArray"][index]["type"] = oscArray[index].osc.type;
 	}
+	//Set download button link and make visible
 	presetJSON = "data:text/json;charset=utf-8,"+ encodeURIComponent(JSON.stringify(preset));
 	dlButton.href = presetJSON;
+	dlButton.style.visibility = "visible";
 }
 
 async function loadPreset() {
+	//Access file
 	var preset = document.getElementById("presetUploader").files[0];
 	var reader = new FileReader()
 	reader.readAsText(preset);
+	//Clear current loaded oscs
 	oscArray = [];
 	oscParams = [];
 	delete Osc.numInstances;
 	document.getElementById("oscs").innerHTML = "";
 	//Doesn't work without this (I think it tries to read the result before it's finished reading)
-	await new Promise(r => setTimeout(r, 2000));
+	await new Promise(r => setTimeout(r, 1000));
 	preset = JSON.parse(reader.result);
-
+	//Load data for non-osc elements
 	document.getElementById("mainVolumeSlider").value = preset["mainVolume"];
 	updateMainVolume();
 
@@ -372,7 +376,7 @@ async function loadPreset() {
 
 	for (let i = 0; i < preset["numOscs"]; i++) {
 		createOsc()
-
+		//Load data into oscs from file
 		oscArray[i].maxFreqValue.value = preset["oscArray"][i]["frequencyMax"];
 		oscArray[i].minFreqValue.value = preset["oscArray"][i]["frequencyMin"];
 		oscArray[i].maxAmpValue.value = preset["oscArray"][i]["gainMax"];
@@ -391,9 +395,14 @@ async function loadPreset() {
 		oscArray[i].osc.type = preset["oscArray"][i]["type"];
 	}
 	for (let i = 0; i < preset["numOscs"]; i++) {
+		//Set destinations after oscs have been created
 		oscArray[i].oscDests.value = preset["oscArray"][i]["destination"];
 		oscArray[i].updateDestination();
 	}
+}
+
+function hideDownloadButton() {
+	document.getElementById("presetDownloader").style.visibility = "hidden";
 }
 
 function playWaveform() {

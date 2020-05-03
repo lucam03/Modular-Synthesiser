@@ -34,11 +34,11 @@
         <input id="maxLowPass" value="16000" oninput="updateFiltersMinMax()">Max
     </div><br>
 
-    <h4>Load/Save Preset</h4>
+    <h4>Export/Import Preset</h4>
     <div>
+      <a id="presetPrep" href="javascript:createPresetJSON()">Prepare Download</a><br>
+      <a id="presetDownloader" download="preset.json" onclick="hideDownloadButton()">Download Preset</a><br>
       <input type="file" id="presetUploader" accept=".json" onchange="loadPreset()"><br><br>
-      <input type="button" id="presetPrep" onclick="createPresetJSON()" value="Prepare Download"><br><br>
-      <a id="presetDownloader" download="preset.json">Download Preset</a><br><br>
     </div>
     </div>
     <div id="oscs"></div>

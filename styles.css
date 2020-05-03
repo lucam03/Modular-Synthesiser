@@ -59,6 +59,11 @@ button, a, input[type=file], input[type=button] {
   border-style: solid;
   text-decoration: none;
   color: #E5E9F0;
+  cursor: default;
+}
+
+button:hover, a:hover, input[type=file]:hover {
+  background-color: #9D424B;
 }
 
 .slidertext {
@@ -125,4 +130,8 @@ canvas {
 
 #presetUploader, #presetDownloader, #presetPrep {
   width: 70% !important;
+}
+
+#presetDownloader {
+  visibility: hidden;
 }
