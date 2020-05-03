@@ -8,7 +8,6 @@ var oscParams = [];
 //Creating analyser node, defining its properties for visualiser
 var analyser = context.createAnalyser();
 analyser.connect(mainVolume);
-analyser.fftSize = 2048;
 //Create highpass+lowpass filters
 var lowPass = context.createBiquadFilter();
 lowPass.type = "lowpass";
@@ -18,17 +17,17 @@ var highPass = context.createBiquadFilter();
 highPass.type = "highpass";
 highPass.frequency.value = 0;
 highPass.connect(lowPass);
-//Creating array for frequency and waveform
-var bufferLength = analyser.frequencyBinCount;
-var dataArray = new Uint8Array(bufferLength);
-//Creating canvas variable
+//Creating canvas variables
 var canvas = document.getElementById('canvas');
 var canvasCtx = canvas.getContext('2d');
+var bufferLength = analyser.frequencyBinCount;
+var dataArray = new Uint8Array(bufferLength);
 //Canvas dimensions
 var WIDTH = 300;
 var HEIGHT = 150;
 canvas.width = `${WIDTH}`;
 canvas.height = `${HEIGHT}`;
+visualiseMode = 0
 playWaveform();
 
 class Osc {
@@ -138,14 +137,10 @@ class Osc {
 		setAttributes(this.panSlider, {"id":`panSlider${Osc.numInstances}`, "type":"range", "min":-1, "max":1, "value":0, "step":0.01, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updatePan()})`)});
 		this.panDiv.appendChild(this.panSlider);
 		this.oscDiv.appendChild(this.panDiv);
-		//Create play button
-		this.playButton = document.createElement("button");
-		setAttributes(this.playButton, {"innerHTML":"PLAY", "id":`playButton${Osc.numInstances}`, "onclick":eval(`(function() {oscArray[${Osc.numInstances}].playOsc()})`)});
-		this.control.appendChild(this.playButton);
-		//Create stop button
-		this.stopButton = document.createElement("button");
-		setAttributes(this.stopButton, {"innerHTML":"STOP", "id":`stopButton${Osc.numInstances}`, "onclick":eval(`(function() {oscArray[${Osc.numInstances}].stopOsc()})`)});
-		this.control.appendChild(this.stopButton);
+		//Create start/stop button
+		this.ssButton = document.createElement("button");
+		setAttributes(this.ssButton, {"innerHTML":"START", "id":`ssButton${Osc.numInstances}`, "className":"ssButton", "onclick":eval(`(function() {oscArray[${Osc.numInstances}].toggleOsc()})`)});
+		this.control.appendChild(this.ssButton);
 		//Define waveshapes
 		this.sineWave = document.createElement("option");
 		this.squareWave = document.createElement("option");
@@ -169,25 +164,23 @@ class Osc {
 		console.log("Osc created");
 		console.log(this.oscDiv);
 	}
-	playOsc() {
-		this.osc.connected = true;
-		this.osc.connect(this.oscGain);
-		this.oscDiv.className = "Osc oscOn"
-
-		if (!this.osc.hasBeenStarted) {
-			this.osc.start();
-			this.osc.hasBeenStarted = true;
-		}
-		console.log("Started");
-	}
-	stopOsc() {
+	toggleOsc() {
 		if (this.osc.connected) {
-			this.osc.disconnect(this.oscGain);
-			this.oscDiv.className = "Osc oscOff"
 			this.osc.connected = false;
-			console.log("Stopped");
+			this.osc.disconnect(this.oscGain);
+			this.oscDiv.className = "Osc oscOff";
+			document.getElementById(`ssButton${this.num}`).innerHTML = "START";
+		} else {
+			this.osc.connected = true;
+			this.osc.connect(this.oscGain);
+			this.oscDiv.className = "Osc oscOn";
+			if (!this.osc.hasBeenStarted) {
+				this.osc.start();
+				this.osc.hasBeenStarted = true;
+			}
+			document.getElementById(`ssButton${this.num}`).innerHTML = "STOP";
 		}
-  }
+	}
 	updateFrequency(updateType) {
 		if (updateType === "S") {
 			this.osc.frequency.value = this.oscFrequency.value;
@@ -399,44 +392,74 @@ async function loadPreset() {
 		oscArray[i].oscDests.value = preset["oscArray"][i]["destination"];
 		oscArray[i].updateDestination();
 	}
+	document.getElementById("presetUploader").value = null;
 }
 
 function hideDownloadButton() {
 	document.getElementById("presetDownloader").style.visibility = "hidden";
 }
 
+function switchVisualiser() {
+	visualiseMode = 1 - visualiseMode;
+}
+
 function playWaveform() {
 	//clears canvas
 	canvasCtx.clearRect( 0, 0, WIDTH, HEIGHT);
+	analyser.fftSize = 2048;
+	bufferLength = analyser.frequencyBinCount;
+	dataArray = new Uint8Array(bufferLength);
 	function draw() {
-		// variable to enable looping of draw function
-		var drawVisual = requestAnimationFrame(draw);
-		//time domain data
-		analyser.getByteTimeDomainData(dataArray);
-		//canvas settings
-		canvasCtx.fillStyle = '#7B8291';
-		canvasCtx.fillRect( 0, 0, WIDTH, HEIGHT);
-		canvasCtx.lineWidth = 2;
-		canvasCtx.strokeStyle = '#3B4251';
-		canvasCtx.beginPath();
-		//width of each segment of the line to be drawn by dividing canvas
-		var sliceWidth = WIDTH * 1.0 / bufferLength;
-		var x = 0;
-		const ampCoefficient = 1;
-		//looping to get define position of wave at each point in buffer
-		for(var i = 0; i < bufferLength; i++){
-			var v = ampCoefficient * dataArray[i] / 128;
-			var y = v * HEIGHT/2;
-			if (i === 0) {
-				canvasCtx.moveTo(x,y);
-			} else {
-				canvasCtx.lineTo(x,y);
+		if (visualiseMode == 0) {
+			// variable to enable looping of draw function
+			var drawVisual = requestAnimationFrame(draw);
+			//time domain data
+			analyser.getByteTimeDomainData(dataArray);
+			//canvas settings
+			canvasCtx.fillStyle = '#7B8291';
+			canvasCtx.fillRect( 0, 0, WIDTH, HEIGHT);
+			canvasCtx.lineWidth = 2;
+			canvasCtx.strokeStyle = '#3B4251';
+			canvasCtx.beginPath();
+			//width of each segment of the line to be drawn by dividing canvas
+			var sliceWidth = WIDTH * 1.0 / bufferLength;
+			var x = 0;
+			const ampCoefficient = 1;
+			//looping to get define position of wave at each point in buffer
+			for (var i = 0; i < bufferLength; i++){
+				var v = ampCoefficient * dataArray[i] / 128;
+				var y = v * HEIGHT/2;
+				if (i === 0) {
+					canvasCtx.moveTo(x,y);
+				} else {
+					canvasCtx.lineTo(x,y);
+				}
+				x += sliceWidth;
 			}
+			canvasCtx.lineTo(canvas.width, canvas.height/2);
+			canvasCtx.stroke();
 
-			x += sliceWidth;
+		} else {
+			var drawVisual = requestAnimationFrame(draw);
+
+    	analyser.getByteFrequencyData(dataArray);
+
+    	canvasCtx.fillStyle = '#7B8291';
+    	canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+
+			var barWidth = (WIDTH / bufferLength) * 5;
+			var barHeight;
+			var x = 0;
+
+			for (var i = 0; i < bufferLength; i++) {
+      	barHeight = dataArray[i];
+
+      	canvasCtx.fillStyle = '#3B4251';
+      	canvasCtx.fillRect(x,HEIGHT-barHeight/2,barWidth,barHeight);
+
+      	x += barWidth + 1;
+			}
 		}
-		canvasCtx.lineTo(canvas.width, canvas.height/2);
-		canvasCtx.stroke();
-		};
-		draw();
+	}
+	draw();
 }
