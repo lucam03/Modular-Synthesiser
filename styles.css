@@ -127,6 +127,7 @@ option{
 canvas {
   border-radius: 10px;
   border: solid 5px #2E3440;
+  width: 85%;
 }
 
 .filterSlider {
