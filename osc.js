@@ -25,8 +25,8 @@ var dataArray = new Uint8Array(bufferLength);
 //Canvas dimensions
 var WIDTH = 300;
 var HEIGHT = 150;
-canvas.width = `${WIDTH}`;
-canvas.height = `${HEIGHT}`;
+// canvas.width = `${WIDTH}`;
+// canvas.height = `${HEIGHT}`;
 visualiseMode = 0
 playWaveform();
 
@@ -78,7 +78,7 @@ class Osc {
 		this.freqDiv.appendChild(this.freqText);
 		//Create osc frequency slider
 		this.oscFrequency = document.createElement("input");
-		setAttributes(this.oscFrequency, {"id":`frequency${Osc.numInstances}`, "type":"range", "min":0, "max":440, "value":262, "step":0.1, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updateFrequency("S")})`)});
+		setAttributes(this.oscFrequency, {"id":`frequency${Osc.numInstances}`, "className":"oscSlider", "type":"range", "min":0, "max":440, "value":262, "step":0.1, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updateFrequency("S")})`)});
 		this.freqDiv.appendChild(this.oscFrequency);
 		this.oscDiv.appendChild(this.freqDiv);
 		//Create min and max frequency boxes
@@ -106,7 +106,7 @@ class Osc {
 		this.ampDiv.appendChild(this.ampText);
 		//Create amplitude slider
 		this.oscAmplitude = document.createElement("input");
-		setAttributes(this.oscAmplitude, {"id":`amplitude${Osc.numInstances}`, "type":"range", "min":0, "max":11, "value":1, "step":0.01, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updateAmplitude("S")})`)});
+		setAttributes(this.oscAmplitude, {"id":`amplitude${Osc.numInstances}`, "className":"oscSlider", "type":"range", "min":0, "max":11, "value":1, "step":0.01, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updateAmplitude("S")})`)});
 		this.ampDiv.appendChild(this.oscAmplitude)
 		this.oscDiv.appendChild(this.ampDiv);
 		//Create min and max amplitude boxes
@@ -134,7 +134,7 @@ class Osc {
 		this.panDiv.appendChild(this.panText);
 		//Create panning slider
 		this.panSlider = document.createElement("input");
-		setAttributes(this.panSlider, {"id":`panSlider${Osc.numInstances}`, "type":"range", "min":-1, "max":1, "value":0, "step":0.01, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updatePan()})`)});
+		setAttributes(this.panSlider, {"id":`panSlider${Osc.numInstances}`, "className":"oscSlider", "type":"range", "min":-1, "max":1, "value":0, "step":0.01, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updatePan()})`)});
 		this.panDiv.appendChild(this.panSlider);
 		this.oscDiv.appendChild(this.panDiv);
 		//Create start/stop button
@@ -376,11 +376,11 @@ async function loadPreset() {
 		oscArray[i].minAmpValue.value = preset["oscArray"][i]["gainMin"];
 		oscArray[i].updateMinMax();
 
-		oscArray[i].oscFrequency.value = preset["oscArray"][i]["frequency"];
-		oscArray[i].updateFrequency("S");
+		oscArray[i].oscFreqVal.value = preset["oscArray"][i]["frequency"];
+		oscArray[i].updateFrequency("B");
 
-		oscArray[i].oscAmplitude.value = preset["oscArray"][i]["gain"];
-		oscArray[i].updateAmplitude("S");
+		oscArray[i].oscAmpVal.value = preset["oscArray"][i]["gain"];
+		oscArray[i].updateAmplitude("B");
 
 		oscArray[i].panSlider.value = preset["oscArray"][i]["pan"];
 		oscArray[i].updatePan();
