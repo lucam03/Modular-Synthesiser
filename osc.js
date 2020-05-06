@@ -346,6 +346,10 @@ async function loadPreset() {
 	var reader = new FileReader()
 	reader.readAsText(preset);
 	//Clear current loaded oscs
+	for (i = 0; i < oscArray.length; i++) {
+		oscArray[i].osc.disconnect();
+		delete oscArray[i];
+	}
 	oscArray = [];
 	oscParams = [];
 	delete Osc.numInstances;
