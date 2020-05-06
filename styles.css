@@ -44,7 +44,7 @@ body{
 
 h4 {
   font-weight: bold;
-  margin-left: 10px;
+  margin-bottom: 0px;
 }
 
 button, a, input[type=file] {
@@ -74,6 +74,20 @@ button:focus, a:focus, input[type=file]:focus {
 .slidertext {
   margin-left: 5%;
   display: inline-block;
+}
+
+/* .oscSlider {
+  float: right;
+  margin-right: 25% !important;
+  vertical-align: middle !important;
+}
+
+.sliderdiv {
+  line-height: 100%;
+} */
+
+.midiDiv {
+  margin-bottom: 10px;
 }
 
 input {

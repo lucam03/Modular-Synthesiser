@@ -30,6 +30,45 @@ var HEIGHT = 150;
 visualiseMode = 0
 playWaveform();
 
+//Midi setup
+var midiInputs;
+var midiOutputs;
+
+if (!('requestMIDIAccess' in navigator)) {
+  alert("MIDI functionality will not work in this browser");
+} else {
+  navigator.requestMIDIAccess().then(midi => {
+    updateMidi(midi);
+    midi.onstatechange = stateChange => updateMidi(stateChange.target);
+  });
+}
+
+function updateMidi(midi) {
+	midiInputs = midi.inputs.size ? midi.inputs.values().next().value : void(0);
+	midiOutputs = midi.outputs.size ? midi.outputs.values().next().value : void(0);
+
+	if (midiInputs) {
+		midiInputs.onmidimessage = note => {
+			newFrequency = midiToFrequency(note.data[1]);
+			for (let i = 0; i < oscArray.length; i++) {
+				if (note.data[0] != 254) {
+					oscArray[i].osc.frequency.value = newFrequency;
+				}
+				// if (note.data[0] == 144 && note.data[2] != 0 && oscArray[i].midiEnabled) {
+				// 	oscArray[i].osc.frequency.value = newFrequency;
+				// 	if (!oscArray[i].connected) {
+				// 		oscArray[i].toggleOsc();
+				// 	}
+				// } else if (note.data[0] == 128 || note.data[2] == 0 && oscArray[i].midiEnabled) {
+				// 	if (newFrequency == oscArray[i].osc.frequency.value) {
+				// 		oscArray[i].toggleOsc();
+				// 	}
+				// }
+			}
+		}
+	}
+}
+
 class Osc {
 	constructor() {
 		Osc.numInstances = (Osc.numInstances + 1 || 0);
@@ -41,6 +80,7 @@ class Osc {
 		this.osc.frequency.value = 262;
 		this.osc.type = "sine";
 		this.destination = highPass;
+		this.midiEnabled = false;
 		//Initialise destinations
 		this.mainDestination = document.createElement("option");
 		setAttributes(this.mainDestination, {"value":`oscArray[${Osc.numInstances}].panNode`, "innerHTML":"Audio OUT"});
@@ -67,7 +107,7 @@ class Osc {
 		setAttributes(this.oscDiv, {"id":`osc${Osc.numInstances}`, "className":"Osc oscOff"});
 		//Create osc title
 		this.oscTitle = document.createElement("h4");
-		setAttributes(this.oscTitle, {"innerHTML":`Oscillator ${Osc.numInstances + 1}`, "id":`Title${Osc.numInstances}`, "style":"width: 100%"});
+		setAttributes(this.oscTitle, {"innerHTML":`Oscillator ${Osc.numInstances + 1}`, "id":`Title${Osc.numInstances}`});
 		this.oscDiv.appendChild(this.oscTitle);
 		//create div for frequency slider
 		this.freqDiv = document.createElement("div");
@@ -137,6 +177,16 @@ class Osc {
 		setAttributes(this.panSlider, {"id":`panSlider${Osc.numInstances}`, "className":"oscSlider", "type":"range", "min":-1, "max":1, "value":0, "step":0.01, "oninput":eval(`(function() {oscArray[${Osc.numInstances}].updatePan()})`)});
 		this.panDiv.appendChild(this.panSlider);
 		this.oscDiv.appendChild(this.panDiv);
+		//Create midi checkbox
+		this.midiDiv = document.createElement("div");
+		this.midiDiv.className = `midiDiv`;
+		this.midiCheckbox = document.createElement("input");
+		setAttributes(this.midiCheckbox, {"id":`midiCheck${Osc.numInstances}`, "className":"midiCheckbox", "type":"checkbox", "onclick":eval(`(function() {oscArray[${Osc.numInstances}].midiCheck()})`)});
+		this.midiLabel = document.createElement("label");
+		setAttributes(this.midiLabel, {"id":`midiLabel${Osc.numInstances}`, "for":`midiCheck${Osc.numInstances}`, "className":"midiLabel", "innerHTML":"MIDI Enabled?"});
+		this.midiDiv.appendChild(this.midiLabel);
+		this.midiDiv.appendChild(this.midiCheckbox);
+		this.oscDiv.appendChild(this.midiDiv);
 		//Create start/stop button
 		this.ssButton = document.createElement("button");
 		setAttributes(this.ssButton, {"innerHTML":"START", "id":`ssButton${Osc.numInstances}`, "className":"ssButton", "onclick":eval(`(function() {oscArray[${Osc.numInstances}].toggleOsc()})`)});
@@ -256,6 +306,9 @@ class Osc {
 			}
 		}
 	}
+	midiCheck() {
+		this.midiEnabled ^= true;
+	}
 }
 
 function createOsc() {
@@ -346,7 +399,7 @@ async function loadPreset() {
 	var reader = new FileReader()
 	reader.readAsText(preset);
 	//Clear current loaded oscs
-	for (i = 0; i < oscArray.length; i++) {
+	for (let i = 0; i < oscArray.length; i++) {
 		oscArray[i].osc.disconnect();
 		delete oscArray[i];
 	}
@@ -466,4 +519,8 @@ function playWaveform() {
 		}
 	}
 	draw();
+}
+
+function midiToFrequency(midiNum) {
+	return 440*2**((midiNum-69)/12);
 }
