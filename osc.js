@@ -50,20 +50,11 @@ function updateMidi(midi) {
 	if (midiInputs) {
 		midiInputs.onmidimessage = note => {
 			newFrequency = midiToFrequency(note.data[1]);
+			console.log(note.data);
 			for (let i = 0; i < oscArray.length; i++) {
-				if (note.data[0] != 254) {
+				if (note.data[0] != 254 && note.data[2] > 0 && oscArray[i].midiEnabled) {
 					oscArray[i].osc.frequency.value = newFrequency;
 				}
-				// if (note.data[0] == 144 && note.data[2] != 0 && oscArray[i].midiEnabled) {
-				// 	oscArray[i].osc.frequency.value = newFrequency;
-				// 	if (!oscArray[i].connected) {
-				// 		oscArray[i].toggleOsc();
-				// 	}
-				// } else if (note.data[0] == 128 || note.data[2] == 0 && oscArray[i].midiEnabled) {
-				// 	if (newFrequency == oscArray[i].osc.frequency.value) {
-				// 		oscArray[i].toggleOsc();
-				// 	}
-				// }
 			}
 		}
 	}
